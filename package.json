@@ -1,0 +1,21 @@
+{
+  "name": "vroom-express",
+  "version": "0.1.0",
+  "description": "An express server to expose VROOM as a web API.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "VROOM",
+    "optimization",
+    "API",
+    "TSP",
+    "VRP",
+    "routing",
+    "OSRM",
+    "OSM"
+  ],
+  "author": "Julien Coupey",
+  "license": "BSD-2-Clause",
+}
