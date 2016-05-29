@@ -6,8 +6,9 @@ var helmet = require('helmet');
 // Config variables.
 var VROOM_PATH = '';
 var MAX_LOCATION_NUMBER = 50;
-var ROUTE_GEOMETRY = true;
+var ROUTE_GEOMETRY = false;
 var USE_OSRM_V5 = true;
+var ALLOW_OPTIONS_OVERRIDE = true; // -g only so far.
 
 // App and loaded modules.
 var app = express();
@@ -67,7 +68,13 @@ if(USE_OSRM_V5){
 }
 
 var cb_exec = function (req, res){
-  exec(command + options + '\'' + JSON.stringify(req.body) + '\'',
+  var req_options = '';
+  if(!ROUTE_GEOMETRY && ALLOW_OPTIONS_OVERRIDE
+     && 'options' in req.body && 'g' in req.body['options']
+     && req.body['options']['g']){
+    req_options = '-g ';
+  }
+  exec(command + options + req_options + '\'' + JSON.stringify(req.body) + '\'',
        // TODO find a better way to deal with big outputs.
        {'maxBuffer': 5000*1024},
        function(error, stdout, stderr){
