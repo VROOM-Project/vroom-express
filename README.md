@@ -32,4 +32,14 @@ beginning of `src/index.js` file. This includes options to:
 - set the default wrt the detailed route geometry display;
 - choose to use new v5.\* OSRM API or older v4.\*;
 - set OSRM server address and port;
-- allow to override some of the above at query time.
+- allow to override some of the above at query time (see "Notes").
+
+# Notes
+
+The new VROOM API (using `json` input) is required but not released
+yet so make sure you build VROOM from the `develop` branch in the
+meantime.
+
+As a default, responses do not contain the route geometry but this can
+be changed at query-time by adding an `"options": {"g": true}` object
+to the json request.
