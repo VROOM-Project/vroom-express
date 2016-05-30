@@ -23,5 +23,9 @@
     "express": "^4.13.4",
     "helmet": "^2.1.0",
     "morgan": "^1.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VROOM-Project/vroom-express.git"
   }
 }
