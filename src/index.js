@@ -8,6 +8,7 @@ var VROOM_PATH = '';
 var MAX_LOCATION_NUMBER = 50;
 var ROUTE_GEOMETRY = false;
 var USE_OSRM_V5 = true;
+var USE_LIBOSRM = true;
 var OSRM_ADDRESS = "0.0.0.0";
 var OSRM_PORT = "5000";
 var ALLOW_OPTIONS_OVERRIDE = true; // -g only so far.
@@ -59,7 +60,7 @@ var cb_size_check = function (req, res, next){
 var exec = require('child_process').exec;
 
 var command = VROOM_PATH + 'vroom ';
-var options = '-a ' + OSRM_ADDRESS + ' -p ' + OSRM_PORT + ' ';
+var options = (USE_LIBOSRM) ? '-l ': '-a ' + OSRM_ADDRESS + ' -p ' + OSRM_PORT + ' ';
 if(ROUTE_GEOMETRY){
   options += '-g ';
 }
