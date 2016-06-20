@@ -1,4 +1,5 @@
 var express = require('express');
+var fs = require('fs');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var helmet = require('helmet');
@@ -12,6 +13,7 @@ var USE_LIBOSRM = false;
 var OSRM_ADDRESS = "0.0.0.0";
 var OSRM_PORT = "5000";
 var ALLOW_OPTIONS_OVERRIDE = true; // -g only so far.
+var LOG_DIRNAME = __dirname + '/..';
 
 // App and loaded modules.
 var app = express();
@@ -25,8 +27,18 @@ app.use(function(req, res, next){
 });
 
 app.use(bodyParser.json());
-app.use(morgan('combined'));
+
+var accessLogStream = fs.createWriteStream(LOG_DIRNAME + '/access.log',
+                                           {flags: 'a'});
+app.use(morgan('combined', {stream: accessLogStream}));
+
 app.use(helmet());
+
+// Simple date generator for console output.
+var now = function(){
+  var date = new Date();
+  return date.toUTCString();
+}
 
 // Callback for size and some input validity checks.
 var cb_size_check = function (req, res, next){
@@ -49,7 +61,7 @@ var cb_size_check = function (req, res, next){
     nb_locs += 1;
   }
   if(nb_locs > MAX_LOCATION_NUMBER){
-    console.log('Too many locs in query (' + nb_locs + ')');
+    console.log(now() + '\n' + 'Too many locs in query (' + nb_locs + ')');
     res.send({code: 1, error: 'Too many locations.'});
     return;
   }
@@ -91,7 +103,7 @@ var cb_exec = function (req, res){
   vroom.stdout.pipe(res);
 
   vroom.stderr.on('data', function (data){
-    console.log(data.toString());
+    console.log(now() + '\n' + data.toString());
   });
 }
 

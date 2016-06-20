@@ -33,6 +33,7 @@ beginning of `src/index.js` file. This includes options to:
 - choose to use new v5.\* OSRM API or older v4.\*;
 - set address and port for `osrm-routed`;
 - choose to use `libosrm` over `osrm-routed`;
+- set directory for `access.log` file;
 - allow to override some of the above at query time (see "Notes").
 
 # Notes
