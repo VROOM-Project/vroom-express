@@ -57,36 +57,42 @@ var cb_size_check = function (req, res, next){
 }
 
 // Cli wrapper and associated callback.
-var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 
-var command = VROOM_PATH + 'vroom ';
-var options = (USE_LIBOSRM) ? '-l ': '-a ' + OSRM_ADDRESS + ' -p ' + OSRM_PORT + ' ';
+var vroom_command = VROOM_PATH + 'vroom';
+var options = [];
+if(USE_LIBOSRM){
+  options.push('-l');
+}
+else{
+  options.push('-a', OSRM_ADDRESS);
+  options.push('-p', OSRM_PORT);
+}
 if(ROUTE_GEOMETRY){
-  options += '-g ';
+  options.push('-g');
 }
 if(USE_OSRM_V5){
   // As of v5.1.0, profile name doesn't matter, so car will do until
   // it should be made into a variable.
-  options += '-m car ';
+  options.push('-m', 'car');
 }
 
 var cb_exec = function (req, res){
-  var req_options = '';
+  var req_options = options.slice();
   if(!ROUTE_GEOMETRY && ALLOW_OPTIONS_OVERRIDE
      && 'options' in req.body && 'g' in req.body['options']
      && req.body['options']['g']){
-    req_options = '-g ';
+    req_options.push('-g');
   }
-  exec(command + options + req_options + '\'' + JSON.stringify(req.body) + '\'',
-       // TODO find a better way to deal with big outputs.
-       {'maxBuffer': 5000*1024},
-       function(error, stdout, stderr){
-         res.send(stdout);
-         if(error !== null){
-           console.log(error);
-         }
-       }
-      );
+
+  req_options.push(JSON.stringify(req.body));
+  var vroom = spawn(vroom_command, req_options);
+
+  vroom.stdout.pipe(res);
+
+  vroom.stderr.on('data', function (data){
+    console.log(data.toString());
+  });
 }
 
 app.post('/', [cb_size_check, cb_exec]);
