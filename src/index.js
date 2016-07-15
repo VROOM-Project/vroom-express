@@ -41,31 +41,33 @@ var now = function(){
 }
 
 // Callback for size and some input validity checks.
-var sizeCheckCallback = function (req, res, next){
-  res.setHeader('Content-Type', 'application/json');
+var sizeCheckCallback = function(maxLocationNumber){
+  return function (req, res, next){
+    res.setHeader('Content-Type', 'application/json');
 
-  var correctInput = ('jobs' in req.body)
-      && ('vehicles' in req.body)
-      && (req.body['vehicles'].length >= 1);
+    var correctInput = ('jobs' in req.body)
+        && ('vehicles' in req.body)
+        && (req.body['vehicles'].length >= 1);
 
-  if(!correctInput){
-    res.send({code: 1, error: 'Invalid query.'});
-    return;
-  }
+    if(!correctInput){
+      res.send({code: 1, error: 'Invalid query.'});
+      return;
+    }
 
-  var nbLocs = req.body['jobs'].length;
-  if('start' in req.body['vehicles'][0]){
-    nbLocs += 1;
+    var nbLocs = req.body['jobs'].length;
+    if('start' in req.body['vehicles'][0]){
+      nbLocs += 1;
+    }
+    if('end' in req.body['vehicles'][0]){
+      nbLocs += 1;
+    }
+    if(nbLocs > maxLocationNumber){
+      console.log(now() + '\n' + 'Too many locs in query (' + nbLocs + ')');
+      res.send({code: 1, error: 'Too many locations.'});
+      return;
+    }
+    next();
   }
-  if('end' in req.body['vehicles'][0]){
-    nbLocs += 1;
-  }
-  if(nbLocs > MAX_LOCATION_NUMBER){
-    console.log(now() + '\n' + 'Too many locs in query (' + nbLocs + ')');
-    res.send({code: 1, error: 'Too many locations.'});
-    return;
-  }
-  next();
 }
 
 // Cli wrapper and associated callback.
@@ -107,7 +109,7 @@ var execCallback = function (req, res){
   });
 }
 
-app.post('/', [sizeCheckCallback, execCallback]);
+app.post('/', [sizeCheckCallback(MAX_LOCATION_NUMBER), execCallback]);
 
 app.listen(3000, function (){
   console.log('vroom-express listening on port 3000!');
