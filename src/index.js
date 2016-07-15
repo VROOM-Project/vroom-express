@@ -41,27 +41,27 @@ var now = function(){
 }
 
 // Callback for size and some input validity checks.
-var cb_size_check = function (req, res, next){
+var sizeCheckCallback = function (req, res, next){
   res.setHeader('Content-Type', 'application/json');
 
-  var correct_input = ('jobs' in req.body)
+  var correctInput = ('jobs' in req.body)
       && ('vehicles' in req.body)
       && (req.body['vehicles'].length >= 1);
 
-  if(!correct_input){
+  if(!correctInput){
     res.send({code: 1, error: 'Invalid query.'});
     return;
   }
 
-  var nb_locs = req.body['jobs'].length;
+  var nbLocs = req.body['jobs'].length;
   if('start' in req.body['vehicles'][0]){
-    nb_locs += 1;
+    nbLocs += 1;
   }
   if('end' in req.body['vehicles'][0]){
-    nb_locs += 1;
+    nbLocs += 1;
   }
-  if(nb_locs > MAX_LOCATION_NUMBER){
-    console.log(now() + '\n' + 'Too many locs in query (' + nb_locs + ')');
+  if(nbLocs > MAX_LOCATION_NUMBER){
+    console.log(now() + '\n' + 'Too many locs in query (' + nbLocs + ')');
     res.send({code: 1, error: 'Too many locations.'});
     return;
   }
@@ -71,7 +71,7 @@ var cb_size_check = function (req, res, next){
 // Cli wrapper and associated callback.
 var spawn = require('child_process').spawn;
 
-var vroom_command = VROOM_PATH + 'vroom';
+var vroomCommand = VROOM_PATH + 'vroom';
 var options = [];
 if(USE_LIBOSRM){
   options.push('-l');
@@ -89,16 +89,16 @@ if(USE_OSRM_V5){
   options.push('-m', 'car');
 }
 
-var cb_exec = function (req, res){
-  var req_options = options.slice();
+var execCallback = function (req, res){
+  var reqOptions = options.slice();
   if(!ROUTE_GEOMETRY && ALLOW_OPTIONS_OVERRIDE
      && 'options' in req.body && 'g' in req.body['options']
      && req.body['options']['g']){
-    req_options.push('-g');
+    reqOptions.push('-g');
   }
 
-  req_options.push(JSON.stringify(req.body));
-  var vroom = spawn(vroom_command, req_options);
+  reqOptions.push(JSON.stringify(req.body));
+  var vroom = spawn(vroomCommand, reqOptions);
 
   vroom.stdout.pipe(res);
 
@@ -107,7 +107,7 @@ var cb_exec = function (req, res){
   });
 }
 
-app.post('/', [cb_size_check, cb_exec]);
+app.post('/', [sizeCheckCallback, execCallback]);
 
 app.listen(3000, function (){
   console.log('vroom-express listening on port 3000!');
