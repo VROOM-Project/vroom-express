@@ -8,7 +8,6 @@ var helmet = require('helmet');
 var VROOM_PATH = '';
 var MAX_JOB_NUMBER = 50;
 var ROUTE_GEOMETRY = false;
-var USE_OSRM_V5 = true;
 var USE_LIBOSRM = false;
 var OSRM_ADDRESS = "0.0.0.0";
 var OSRM_PORT = "5000";
@@ -80,11 +79,10 @@ else{
 if(ROUTE_GEOMETRY){
   options.push('-g');
 }
-if(USE_OSRM_V5){
-  // As of v5.1.0, profile name doesn't matter, so car will do until
-  // it should be made into a variable.
-  options.push('-m', 'car');
-}
+
+// As of v5.1.0, profile name doesn't matter, so car will do until it
+// should be made into a variable.
+options.push('-m', 'car');
 
 var execCallback = function (req, res){
   var reqOptions = options.slice();
