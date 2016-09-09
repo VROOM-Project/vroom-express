@@ -6,7 +6,7 @@ var helmet = require('helmet');
 
 // Config variables.
 var VROOM_PATH = '';
-var MAX_LOCATION_NUMBER = 50;
+var MAX_JOB_NUMBER = 50;
 var ROUTE_GEOMETRY = false;
 var USE_OSRM_V5 = true;
 var USE_LIBOSRM = false;
@@ -41,7 +41,7 @@ var now = function(){
 }
 
 // Callback for size and some input validity checks.
-var sizeCheckCallback = function(maxLocationNumber){
+var sizeCheckCallback = function(maxJobNumber){
   return function (req, res, next){
     res.setHeader('Content-Type', 'application/json');
 
@@ -54,16 +54,11 @@ var sizeCheckCallback = function(maxLocationNumber){
       return;
     }
 
-    var nbLocs = req.body['jobs'].length;
-    if('start' in req.body['vehicles'][0]){
-      nbLocs += 1;
-    }
-    if('end' in req.body['vehicles'][0]){
-      nbLocs += 1;
-    }
-    if(nbLocs > maxLocationNumber){
-      console.log(now() + '\n' + 'Too many locs in query (' + nbLocs + ')');
-      res.send({code: 1, error: 'Too many locations.'});
+    if(req.body['jobs'].length > maxJobNumber){
+      console.log(now()
+                  + '\n' + 'Too many jobs in query ('
+                  + req.body['jobs'].length + ')');
+      res.send({code: 1, error: 'Too many jobs.'});
       return;
     }
     next();
@@ -109,7 +104,7 @@ var execCallback = function (req, res){
   });
 }
 
-app.post('/', [sizeCheckCallback(MAX_LOCATION_NUMBER), execCallback]);
+app.post('/', [sizeCheckCallback(MAX_JOB_NUMBER), execCallback]);
 
 app.listen(3000, function (){
   console.log('vroom-express listening on port 3000!');
