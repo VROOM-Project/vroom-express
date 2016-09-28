@@ -8,6 +8,13 @@ cd vroom-express
 npm install
 ```
 
+# Requirements
+
+- [OSRM](https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM)
+   v5.0.0 or later.
+- [VROOM](https://github.com/VROOM-Project/vroom/wiki/Building) v1.0.0
+   or later
+
 # Usage
 
 Run the server using:
@@ -16,11 +23,15 @@ npm start
 ```
 
 Provided everything is fine with your VROOM and OSRM setup, you should
-now be able to run queries.
+now be able to run queries like:
 
 ```bash
-curl --header "Content-Type:application/json" --data '{"vehicles":[{"start":[2.294,48.859],"id":1}],"jobs":[{"id":1,"location":[2.352,48.86]},{"id":2,"location":[2.356,48.831]}]}' http://localhost:3000
+curl --header "Content-Type:application/json" --data '{"vehicles":[{"id":0,"start":[2.3526,48.8604],"end":[2.3526,48.8604]}],"jobs":[{"id":0,"location":[2.3691,48.8532]},{"id":1,"location":[2.2911,48.8566]}],"options":{"g":true}}' http://localhost:3000
 ```
+
+See the
+[API documentation](https://github.com/VROOM-Project/vroom/blob/master/docs/API.md)
+for input syntax.
 
 # Customization
 
@@ -30,18 +41,6 @@ beginning of `src/index.js` file. This includes options to:
 - set a max number of locations in handled queries;
 - set the `vroom` exec path on the system (if not found in `PATH`);
 - set the default wrt the detailed route geometry display;
-- choose to use new v5.\* OSRM API or older v4.\*;
 - set address and port for `osrm-routed`;
-- choose to use `libosrm` over `osrm-routed`;
 - set directory for `access.log` file;
-- allow to override some of the above at query time (see "Notes").
 
-# Notes
-
-The new VROOM API (using `json` input) is required but not released
-yet so make sure you build VROOM from the `develop` branch in the
-meantime.
-
-As a default, responses do not contain the route geometry but this can
-be changed at query-time by adding an `"options": {"g": true}` object
-to the json request.
