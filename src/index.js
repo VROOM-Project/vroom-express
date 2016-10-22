@@ -95,6 +95,11 @@ var execCallback = function (req, res){
   reqOptions.push(JSON.stringify(req.body));
   var vroom = spawn(vroomCommand, reqOptions);
 
+  vroom.on('error', function(err){
+    console.log(now() + '\n' + err);
+    res.send({code: 1, error: 'Unfound command: ' + vroomCommand});
+  });
+
   vroom.stdout.pipe(res);
 
   vroom.stderr.on('data', function (data){
