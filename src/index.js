@@ -13,6 +13,7 @@ var OSRM_ADDRESS = "0.0.0.0";
 var OSRM_PORT = "5000";
 var ALLOW_OPTIONS_OVERRIDE = true; // -g only so far.
 var LOG_DIRNAME = __dirname + '/..';
+var INPUT_SIZE_LIMIT = '200kb';
 
 // App and loaded modules.
 var app = express();
@@ -25,7 +26,8 @@ app.use(function(req, res, next){
   next();
 });
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: INPUT_SIZE_LIMIT}));
+app.use(bodyParser.urlencoded({limit: INPUT_SIZE_LIMIT, extended: true}));
 
 var accessLogStream = fs.createWriteStream(LOG_DIRNAME + '/access.log',
                                            {flags: 'a'});
