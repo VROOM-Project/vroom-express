@@ -14,6 +14,7 @@ var OSRM_PORT = "5000";
 var ALLOW_OPTIONS_OVERRIDE = true; // -g only so far.
 var LOG_DIRNAME = __dirname + '/..';
 var INPUT_SIZE_LIMIT = '200kb';
+var CUSTOM_TIMEOUT = 2 * 60 * 1000; // milli-seconds.
 
 // App and loaded modules.
 var app = express();
@@ -111,6 +112,8 @@ var execCallback = function (req, res){
 
 app.post('/', [sizeCheckCallback(MAX_JOB_NUMBER), execCallback]);
 
-app.listen(3000, function (){
+var server = app.listen(3000, function (){
   console.log('vroom-express listening on port 3000!');
 });
+
+server.setTimeout(CUSTOM_TIMEOUT);
