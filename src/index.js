@@ -6,7 +6,7 @@ var helmet = require('helmet');
 
 // Config variables.
 var VROOM_PATH = '';
-var MAX_JOB_NUMBER = 50;
+var MAX_JOB_NUMBER = 100;
 var ROUTE_GEOMETRY = false;
 var USE_LIBOSRM = false;
 var OSRM_ADDRESS = "0.0.0.0";
