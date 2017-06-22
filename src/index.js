@@ -36,6 +36,14 @@ app.use(morgan('combined', {stream: accessLogStream}));
 
 app.use(helmet());
 
+app.use(function(err, req, res, next){
+  res.setHeader('Content-Type', 'application/json');
+  if(err instanceof SyntaxError && err.status === 400 && 'body' in err){
+    console.log(now() + ' - ' + 'Invalid JSON');
+    res.send({code: 1, error: 'Invalid json.'});
+  }
+});
+
 // Simple date generator for console output.
 var now = function(){
   var date = new Date();
@@ -45,8 +53,6 @@ var now = function(){
 // Callback for size and some input validity checks.
 var sizeCheckCallback = function(maxJobNumber){
   return function (req, res, next){
-    res.setHeader('Content-Type', 'application/json');
-
     var correctInput = ('jobs' in req.body)
         && ('vehicles' in req.body)
         && (req.body['vehicles'].length >= 1);
@@ -58,7 +64,7 @@ var sizeCheckCallback = function(maxJobNumber){
 
     if(req.body['jobs'].length > maxJobNumber){
       console.log(now()
-                  + '\n' + 'Too many jobs in query ('
+                  + ' - Too many jobs in query ('
                   + req.body['jobs'].length + ')');
       res.send({code: 1, error: 'Too many jobs.'});
       return;
@@ -99,14 +105,14 @@ var execCallback = function (req, res){
   var vroom = spawn(vroomCommand, reqOptions);
 
   vroom.on('error', function(err){
-    console.log(now() + '\n' + err);
+    console.log(now() + ' - ' + err);
     res.send({code: 1, error: 'Unfound command: ' + vroomCommand});
   });
 
   vroom.stdout.pipe(res);
 
   vroom.stderr.on('data', function (data){
-    console.log(now() + '\n' + data.toString());
+    console.log(now() + ' - ' + data.toString());
   });
 }
 
