@@ -1,20 +1,49 @@
+'use strict';
+
 var express = require('express');
 var fs = require('fs');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var helmet = require('helmet');
+var minimist = require('minimist');
 
 // Config variables.
-var VROOM_PATH = '';
-var MAX_JOB_NUMBER = 100;
-var ROUTE_GEOMETRY = false;
-var USE_LIBOSRM = false;
-var OSRM_ADDRESS = "0.0.0.0";
-var OSRM_PORT = "5000";
-var ALLOW_OPTIONS_OVERRIDE = true; // -g only so far.
-var LOG_DIRNAME = __dirname + '/..';
-var INPUT_SIZE_LIMIT = '200kb';
-var CUSTOM_TIMEOUT = 2 * 60 * 1000; // milli-seconds.
+let args = minimist(process.argv.slice(2), {
+  alias: {
+    p: 'port',
+  },
+  boolean: [
+    'geometry',
+    'libosrm',
+    'override'
+  ],
+  default: {
+    port: 3000,
+    path: '',
+    maxjobs: '100',
+    geometry: false,
+    libosrm: false,
+    osrm_address: "0.0.0.0",
+    osrm_port: 5000,
+    override: true, // -g only so far.
+    logdir: __dirname + '/..',
+    limit: '200kb',
+    timeout: 2 * 60 * 1000 // milli-seconds.
+  }
+});
+
+var PORT = args['port'];
+var VROOM_PATH = args['path'];
+var MAX_JOB_NUMBER = args['maxjobs'];
+var ROUTE_GEOMETRY = args['geometry'];
+var USE_LIBOSRM = args['libosrm'];
+var OSRM_ADDRESS = args['osrm_address'];
+var OSRM_PORT = args['osrm_port'];
+var ALLOW_OPTIONS_OVERRIDE = args['override']; // -g only so far.
+var LOG_DIRNAME = args['logdir'];
+var INPUT_SIZE_LIMIT = args['limit'];
+var CUSTOM_TIMEOUT = args['timeout']; // milli-seconds.
+
 
 // App and loaded modules.
 var app = express();
@@ -118,8 +147,8 @@ var execCallback = function (req, res){
 
 app.post('/', [sizeCheckCallback(MAX_JOB_NUMBER), execCallback]);
 
-var server = app.listen(3000, function (){
-  console.log('vroom-express listening on port 3000!');
+var server = app.listen(PORT, function (){
+  console.log('vroom-express listening on port ' + PORT + '!');
 });
 
 server.setTimeout(CUSTOM_TIMEOUT);
