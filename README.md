@@ -35,8 +35,14 @@ for input syntax.
 
 # Customization
 
-A bunch of variables can be used to adapt the server behaviour, see
-beginning of `src/index.js` file. This includes options to:
+Launch with
+
+```bash
+node src/index.js
+```
+
+and add command-line parameters (see `args` variable at the beginning
+of `src/index.js`). This includes options to:
 
 - set a max number of locations in handled queries;
 - set the `vroom` exec path on the system (if not found in `PATH`);
