@@ -20,7 +20,7 @@ let args = minimist(process.argv.slice(2), {
   default: {
     port: 3000,
     path: '',
-    maxjobs: '100',
+    maxjobs: '1000',
     geometry: false,
     libosrm: false,
     osrm_address: "0.0.0.0",
