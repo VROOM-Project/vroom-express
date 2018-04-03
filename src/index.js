@@ -27,8 +27,8 @@ let args = minimist(process.argv.slice(2), {
     osrm_port: 5000,
     override: true, // -g only so far.
     logdir: __dirname + '/..',
-    limit: '200kb',
-    timeout: 2 * 60 * 1000 // milli-seconds.
+    limit: '500kb',
+    timeout: 5 * 60 * 1000 // milli-seconds.
   }
 });
 
