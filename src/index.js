@@ -27,7 +27,7 @@ var args = minimist(process.argv.slice(2), {
     osrm_port: 5000,
     override: true,             // allow cl option override (-g only so far)
     logdir: __dirname + '/..',  // put logs in there
-    sizelimit: '500kb',         // max request size
+    limit: '1mb',               // max request size
     timeout: 5 * 60 * 1000      // milli-seconds.
   }
 });
