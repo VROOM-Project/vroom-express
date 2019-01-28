@@ -11,10 +11,10 @@ var minimist = require('minimist');
 var args = minimist(process.argv.slice(2), {
   alias: {
     p: 'port',
+    r: 'router',
   },
   boolean: [
     'geometry',
-    'libosrm',
     'override'
   ],
   default: {
@@ -22,9 +22,9 @@ var args = minimist(process.argv.slice(2), {
     path: '',                   // VROOM path (if not in $PATH)
     maxjobs: '1000',            // max number of jobs
     geometry: false,            // retrieve geometry (-g)
-    libosrm: false,             // use libosrm (-l)
-    osrm_address: "0.0.0.0",
-    osrm_port: 5000,
+    router: "osrm",             // routing backend
+    router_address: "0.0.0.0",
+    router_port: 5000,
     override: true,             // allow cl option override (-g only so far)
     logdir: __dirname + '/..',  // put logs in there
     limit: '1mb',               // max request size
@@ -95,19 +95,12 @@ var spawn = require('child_process').spawn;
 
 var vroomCommand = args['path'] + 'vroom';
 var options = [];
-if (args['libosrm']) {
-  options.push('-l');
-} else {
-  options.push('-a', args['osrm_address']);
-  options.push('-p', args['osrm_port']);
-}
+options.push('-r', args['router']);
+options.push('-a', args['router_address']);
+options.push('-p', args['router_port']);
 if (args['geometry']) {
   options.push('-g');
 }
-
-// As of v5.1.0, profile name doesn't matter, so car will do until it
-// should be made into a variable.
-options.push('-m', 'car');
 
 var execCallback = function (req, res) {
   var reqOptions = options.slice();
