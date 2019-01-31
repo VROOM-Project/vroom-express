@@ -23,14 +23,20 @@ var args = minimist(process.argv.slice(2), {
     maxjobs: '1000',            // max number of jobs
     geometry: false,            // retrieve geometry (-g)
     router: "osrm",             // routing backend
-    router_address: "0.0.0.0",
-    router_port: 5000,
     override: true,             // allow cl option override (-g only so far)
     logdir: __dirname + '/..',  // put logs in there
     limit: '1mb',               // max request size
     timeout: 5 * 60 * 1000      // milli-seconds.
   }
 });
+
+// For each routing profile (e.g., car) add a host and a port.
+var routingServers = {
+  'car': {
+    'host': '0.0.0.0',
+    'port': '8082'
+  }
+}
 
 // App and loaded modules.
 var app = express();
@@ -96,8 +102,19 @@ var spawn = require('child_process').spawn;
 var vroomCommand = args['path'] + 'vroom';
 var options = [];
 options.push('-r', args['router']);
-options.push('-a', args['router_address']);
-options.push('-p', args['router_port']);
+if (args['router'] != 'libosrm') {
+  for (var profileName in routingServers) {
+    var profile = routingServers[profileName];
+    if ('host' in profile && 'port' in profile) {
+      options.push('-a', profileName + ":" + profile['host']);
+      options.push('-p', profileName + ":" + profile['port']);
+    } else {
+      console.log("Incomplete configuration: profile '" +
+        profileName + "' requires 'host' and 'port'.");
+      return;
+    }
+  }
+}
 if (args['geometry']) {
   options.push('-g');
 }
