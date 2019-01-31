@@ -34,7 +34,7 @@ var args = minimist(process.argv.slice(2), {
 var routingServers = {
   'car': {
     'host': '0.0.0.0',
-    'port': '8082'
+    'port': '5000'
   }
 }
 
