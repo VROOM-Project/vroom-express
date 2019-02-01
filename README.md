@@ -22,10 +22,8 @@ npm install
 
 # Requirements
 
-- [OSRM](https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM)
-   v5.0.0 or later.
-- [VROOM](https://github.com/VROOM-Project/vroom/wiki/Building) v1.0.0
-   or later
+- Access to a routing engine ([OSRM](https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM) or [OpenRouteService](https://github.com/GIScience/openrouteservice/))
+- [VROOM](https://github.com/VROOM-Project/vroom/wiki/Building)
 
 # Usage
 
@@ -59,6 +57,5 @@ of `src/index.js`). This includes options to:
 - set a max number of locations in handled queries;
 - set the `vroom` exec path on the system (if not found in `PATH`);
 - set the default wrt the detailed route geometry display;
-- set address and port for `osrm-routed`;
 - set directory for `access.log` file;
 
