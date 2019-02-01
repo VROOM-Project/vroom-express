@@ -1,10 +1,22 @@
 # Setup
 
-Clone the repo and install dependencies using `npm`:
+- Clone the repo
 
 ```bash
 git clone https://github.com/VROOM-Project/vroom-express.git
 cd vroom-express
+```
+
+- Checkout the latest release if you need compatibility with `vroom`
+latest stable version (`v1.3`)
+
+```bash
+git checkout v0.3.0
+```
+
+- Install dependencies using `npm`
+
+```bash
 npm install
 ```
 
