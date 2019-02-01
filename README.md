@@ -32,8 +32,8 @@ Run the server using:
 npm start
 ```
 
-Provided everything is fine with your VROOM and OSRM setup, you should
-now be able to run queries like:
+Provided everything is fine with your VROOM and routing setup, you
+should now be able to run queries like:
 
 ```bash
 curl --header "Content-Type:application/json" --data '{"vehicles":[{"id":0,"start":[2.3526,48.8604],"end":[2.3526,48.8604]}],"jobs":[{"id":0,"location":[2.3691,48.8532]},{"id":1,"location":[2.2911,48.8566]}],"options":{"g":true}}' http://localhost:3000
