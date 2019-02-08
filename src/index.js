@@ -150,16 +150,45 @@ var execCallback = function (req, res) {
   reqOptions.push(JSON.stringify(req.body));
   var vroom = spawn(vroomCommand, reqOptions);
 
+  // Handle errors.
   vroom.on('error', function(err) {
     console.log(now() + ' - ' + err);
     res.status(500);
     res.send({code: errorCode.internal, error: 'Unfound command.'});
   });
 
-  vroom.stdout.pipe(res);
-
   vroom.stderr.on('data', function (data) {
     console.log(now() + ' - ' + data.toString());
+  });
+
+  // Handle solution. The temporary solutionBuffer variable is
+  // required as we also want to adjust the status that is only
+  // retrieved with 'exit', after data is written in stdout.
+  var solutionBuffer;
+
+  vroom.stdout.on('data', function (sol) {
+    solutionBuffer = sol;
+  });
+
+  vroom.on('exit', function (code, signal) {
+    switch (code) {
+    case 0:
+      res.status(200);
+      break;
+    case 1:
+      // Internal error.
+      res.status(500);
+      break;
+    case 2:
+      // Input error.
+      res.status(400);
+      break;
+    case 3:
+      // Routing error.
+      res.status(500);
+      break;
+    }
+    res.send(solutionBuffer);
   });
 }
 
