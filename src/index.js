@@ -39,6 +39,15 @@ var routingServers = {
   }
 }
 
+// Hard-code error codes 1, 2 and 3 as defined in vroom. Add 4 code
+// for size checks.
+var errorCode = {
+  'internal': 1,
+  'input': 2,
+  'routing': 3,
+  'tooLarge': 4
+}
+
 // App and loaded modules.
 var app = express();
 
@@ -64,7 +73,8 @@ app.use(function(err, req, res, next) {
   res.setHeader('Content-Type', 'application/json');
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     console.log(now() + ' - ' + 'Invalid JSON');
-    res.send({code: 1, error: 'Invalid json.'});
+    res.status(400);
+    res.send({code: errorCode.input, error: 'Invalid json.'});
   }
 });
 
@@ -81,7 +91,8 @@ var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
         && ('vehicles' in req.body);
 
     if (!correctInput) {
-      res.send({code: 1, error: 'Invalid query.'});
+      res.status(400);
+      res.send({code: errorCode.input, error: 'Invalid query.'});
       return;
     }
 
@@ -89,14 +100,16 @@ var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
       console.log(now()
                   + ' - Too many jobs in query ('
                   + req.body['jobs'].length + ')');
-      res.send({code: 1, error: 'Too many jobs.'});
+      res.status(413);
+      res.send({code: errorCode.tooLarge, error: 'Too many jobs.'});
       return;
     }
     if (req.body['vehicles'].length > maxVehicleNumber) {
       console.log(now()
                   + ' - Too many vehicles in query ('
                   + req.body['vehicles'].length + ')');
-      res.send({code: 1, error: 'Too many vehicles.'});
+      res.status(413);
+      res.send({code: errorCode.tooLarge, error: 'Too many vehicles.'});
       return;
     }
     next();
@@ -139,7 +152,8 @@ var execCallback = function (req, res) {
 
   vroom.on('error', function(err) {
     console.log(now() + ' - ' + err);
-    res.send({code: 1, error: 'Unfound command: ' + vroomCommand});
+    res.status(500);
+    res.send({code: errorCode.internal, error: 'Unfound command.'});
   });
 
   vroom.stdout.pipe(res);
