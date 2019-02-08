@@ -6,6 +6,8 @@
 
 - Command-line option for router choice (#11)
 - Description for multiple routing profiles (#11)
+- Add option to limit number of vehicles in input (#14)
+- Adjust http response status based on vroom exit code (#13)
 
 ## [v0.3.0]
 
