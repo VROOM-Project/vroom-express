@@ -39,6 +39,15 @@ var routingServers = {
   }
 }
 
+// Hard-code error codes 1, 2 and 3 as defined in vroom. Add 4 code
+// for size checks.
+var errorCode = {
+  'internal': 1,
+  'input': 2,
+  'routing': 3,
+  'tooLarge': 4
+}
+
 // App and loaded modules.
 var app = express();
 
@@ -64,7 +73,8 @@ app.use(function(err, req, res, next) {
   res.setHeader('Content-Type', 'application/json');
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     console.log(now() + ' - ' + 'Invalid JSON');
-    res.send({code: 1, error: 'Invalid json.'});
+    res.status(400);
+    res.send({code: errorCode.input, error: 'Invalid json.'});
   }
 });
 
@@ -81,7 +91,8 @@ var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
         && ('vehicles' in req.body);
 
     if (!correctInput) {
-      res.send({code: 1, error: 'Invalid query.'});
+      res.status(400);
+      res.send({code: errorCode.input, error: 'Invalid query.'});
       return;
     }
 
@@ -89,14 +100,16 @@ var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
       console.log(now()
                   + ' - Too many jobs in query ('
                   + req.body['jobs'].length + ')');
-      res.send({code: 1, error: 'Too many jobs.'});
+      res.status(413);
+      res.send({code: errorCode.tooLarge, error: 'Too many jobs.'});
       return;
     }
     if (req.body['vehicles'].length > maxVehicleNumber) {
       console.log(now()
                   + ' - Too many vehicles in query ('
                   + req.body['vehicles'].length + ')');
-      res.send({code: 1, error: 'Too many vehicles.'});
+      res.status(413);
+      res.send({code: errorCode.tooLarge, error: 'Too many vehicles.'});
       return;
     }
     next();
@@ -137,15 +150,45 @@ var execCallback = function (req, res) {
   reqOptions.push(JSON.stringify(req.body));
   var vroom = spawn(vroomCommand, reqOptions);
 
+  // Handle errors.
   vroom.on('error', function(err) {
     console.log(now() + ' - ' + err);
-    res.send({code: 1, error: 'Unfound command: ' + vroomCommand});
+    res.status(500);
+    res.send({code: errorCode.internal, error: 'Unfound command.'});
   });
-
-  vroom.stdout.pipe(res);
 
   vroom.stderr.on('data', function (data) {
     console.log(now() + ' - ' + data.toString());
+  });
+
+  // Handle solution. The temporary solutionBuffer variable is
+  // required as we also want to adjust the status that is only
+  // retrieved with 'exit', after data is written in stdout.
+  var solutionBuffer;
+
+  vroom.stdout.on('data', function (sol) {
+    solutionBuffer = sol;
+  });
+
+  vroom.on('exit', function (code, signal) {
+    switch (code) {
+    case 0:
+      res.status(200);
+      break;
+    case 1:
+      // Internal error.
+      res.status(500);
+      break;
+    case 2:
+      // Input error.
+      res.status(400);
+      break;
+    case 3:
+      // Routing error.
+      res.status(500);
+      break;
+    }
+    res.send(solutionBuffer);
   });
 }
 
