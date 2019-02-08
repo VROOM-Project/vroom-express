@@ -21,6 +21,7 @@ var args = minimist(process.argv.slice(2), {
     port: 3000,                 // expressjs port
     path: '',                   // VROOM path (if not in $PATH)
     maxjobs: '1000',            // max number of jobs
+    maxvehicles: '200',         // max number of vehicles
     geometry: false,            // retrieve geometry (-g)
     router: "osrm",             // routing backend
     override: true,             // allow cl option override (-g only so far)
@@ -74,11 +75,10 @@ var now = function() {
 }
 
 // Callback for size and some input validity checks.
-var sizeCheckCallback = function(maxJobNumber) {
+var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
   return function (req, res, next) {
     var correctInput = ('jobs' in req.body)
-        && ('vehicles' in req.body)
-        && (req.body['vehicles'].length >= 1);
+        && ('vehicles' in req.body);
 
     if (!correctInput) {
       res.send({code: 1, error: 'Invalid query.'});
@@ -90,6 +90,13 @@ var sizeCheckCallback = function(maxJobNumber) {
                   + ' - Too many jobs in query ('
                   + req.body['jobs'].length + ')');
       res.send({code: 1, error: 'Too many jobs.'});
+      return;
+    }
+    if (req.body['vehicles'].length > maxVehicleNumber) {
+      console.log(now()
+                  + ' - Too many vehicles in query ('
+                  + req.body['vehicles'].length + ')');
+      res.send({code: 1, error: 'Too many vehicles.'});
       return;
     }
     next();
@@ -142,7 +149,7 @@ var execCallback = function (req, res) {
   });
 }
 
-app.post('/', [sizeCheckCallback(args['maxjobs']), execCallback]);
+app.post('/', [sizeCheckCallback(args['maxjobs'], args['maxvehicles']), execCallback]);
 
 var server = app.listen(args['port'], function () {
   console.log('vroom-express listening on port ' + args['port'] + '!');
