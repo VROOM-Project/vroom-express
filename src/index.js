@@ -23,7 +23,7 @@ var args = minimist(process.argv.slice(2), {
     maxjobs: '1000',            // max number of jobs
     maxvehicles: '200',         // max number of vehicles
     geometry: false,            // retrieve geometry (-g)
-    router: "osrm",             // routing backend
+    router: "osrm",             // routing backend (osrm, libosrm or ors)
     override: true,             // allow cl option override (-g only so far)
     logdir: __dirname + '/..',  // put logs in there
     limit: '1mb',               // max request size
@@ -31,7 +31,8 @@ var args = minimist(process.argv.slice(2), {
   }
 });
 
-// For each routing profile (e.g., car) add a host and a port.
+// For each routing profile add a host and a port for use with osrm
+// and ors.
 var routingServers = {
   'car': {
     'host': '0.0.0.0',
