@@ -85,6 +85,22 @@ var now = function() {
   return date.toUTCString();
 }
 
+var logToFile = function(input) {
+  var date = new Date();
+  var timestamp = Math.floor(Date.now() / 1000);
+
+  var fileName = args['logdir'] + '/' + timestamp + '.json';
+  fs.writeFileSync(fileName,
+                   input,
+                   function (err, data) {
+                     if (err) {
+                       console.log(now() + err);
+                     }
+                   });
+
+  return fileName;
+}
+
 // Callback for size and some input validity checks.
 var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
   return function (req, res, next) {
@@ -148,8 +164,11 @@ var execCallback = function (req, res) {
     reqOptions.push('-g');
   }
 
-  reqOptions.push(JSON.stringify(req.body));
-  var vroom = spawn(vroomCommand, reqOptions);
+
+  var fileName = logToFile(JSON.stringify(req.body));
+  reqOptions.push('-i ' + fileName);
+
+  var vroom = spawn(vroomCommand, reqOptions, {shell: true});
 
   // Handle errors.
   vroom.on('error', function(err) {
@@ -190,6 +209,8 @@ var execCallback = function (req, res) {
       break;
     }
     res.send(solutionBuffer);
+
+    fs.unlinkSync(fileName);
   });
 }
 
