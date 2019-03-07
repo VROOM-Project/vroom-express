@@ -1,3 +1,8 @@
+# Requirements
+
+- Access to a routing engine ([OSRM](https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM) or [OpenRouteService](https://github.com/GIScience/openrouteservice/))
+- [VROOM](https://github.com/VROOM-Project/vroom/wiki/Building)
+
 # Setup
 
 - Clone the repo
@@ -7,11 +12,11 @@ git clone https://github.com/VROOM-Project/vroom-express.git
 cd vroom-express
 ```
 
-- Checkout the latest release if you need compatibility with `vroom`
-latest stable version (`v1.3`)
+- Checkout the relevant release depending on your `vroom` version
 
 ```bash
-git checkout v0.3.0
+git checkout v0.4.0             # For vroom v1.4
+git checkout v0.3.0             # For vroom v1.3
 ```
 
 - Install dependencies using `npm`
@@ -19,11 +24,6 @@ git checkout v0.3.0
 ```bash
 npm install
 ```
-
-# Requirements
-
-- Access to a routing engine ([OSRM](https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM) or [OpenRouteService](https://github.com/GIScience/openrouteservice/))
-- [VROOM](https://github.com/VROOM-Project/vroom/wiki/Building)
 
 # Usage
 
@@ -54,8 +54,7 @@ node src/index.js
 and add command-line parameters (see `args` variable at the beginning
 of `src/index.js`). This includes options to:
 
-- set a max number of jobs or vehicles in handled queries;
-- set the `vroom` exec path on the system (if not found in `$PATH`);
+- adjust the max number of jobs or vehicles in handled queries;
+- adjust the `vroom` exec path on the system (if not found in `$PATH`);
 - set the default wrt the detailed route geometry display;
 - set directory for `access.log` file;
-

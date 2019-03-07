@@ -1,9 +1,10 @@
 # Changelog
 
-## [Unreleased]
+## [v0.4.0]
 
 ### Added
 
+- Compatibility with `vroom` v1.4
 - Command-line option for router choice (#11)
 - Description for multiple routing profiles (#11)
 - Add option to limit number of vehicles in input (#14)
@@ -17,6 +18,7 @@
 
 ### Added
 
+- Compatibility with `vroom` v1.3
 - Expose configuration as parameters to command line (#8)
 
 ### Changed
