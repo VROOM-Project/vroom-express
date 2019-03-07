@@ -54,8 +54,8 @@ node src/index.js
 and add command-line parameters (see `args` variable at the beginning
 of `src/index.js`). This includes options to:
 
-- set a max number of locations in handled queries;
-- set the `vroom` exec path on the system (if not found in `PATH`);
+- set a max number of jobs or vehicles in handled queries;
+- set the `vroom` exec path on the system (if not found in `$PATH`);
 - set the default wrt the detailed route geometry display;
 - set directory for `access.log` file;
 
