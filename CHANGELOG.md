@@ -1,6 +1,12 @@
 # Changelog
 
-## [v0.4.0]
+## [v0.4.1] - 2019-03-09
+
+### Fixed
+
+- Truncated response (#18)
+
+## [v0.4.0] - 2019-03-07
 
 ### Added
 

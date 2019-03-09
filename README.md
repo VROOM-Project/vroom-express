@@ -15,7 +15,7 @@ cd vroom-express
 - Checkout the relevant release depending on your `vroom` version
 
 ```bash
-git checkout v0.4.0             # For vroom v1.4
+git checkout v0.4.1             # For vroom v1.4
 git checkout v0.3.0             # For vroom v1.3
 ```
 
