@@ -181,13 +181,13 @@ var execCallback = function (req, res) {
     console.log(now() + ' - ' + data.toString());
   });
 
-  // Handle solution. The temporary solutionBuffer variable is
-  // required as we also want to adjust the status that is only
-  // retrieved with 'exit', after data is written in stdout.
-  var solutionBuffer;
+  // Handle solution. The temporary solution variable is required as
+  // we also want to adjust the status that is only retrieved with
+  // 'exit', after data is written in stdout.
+  var solution = '';
 
-  vroom.stdout.on('data', function (sol) {
-    solutionBuffer = sol;
+  vroom.stdout.on('data', function (data) {
+    solution += data.toString();
   });
 
   vroom.on('exit', function (code, signal) {
@@ -208,7 +208,7 @@ var execCallback = function (req, res) {
       res.status(500);
       break;
     }
-    res.send(solutionBuffer);
+    res.send(solution);
 
     fs.unlinkSync(fileName);
   });
