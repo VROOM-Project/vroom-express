@@ -57,6 +57,7 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers",
              "Origin, X-Requested-With, Content-Type, Accept");
+  res.setHeader('Content-Type', 'application/json');
   next();
 });
 
@@ -71,7 +72,6 @@ app.use(morgan('combined', {stream: accessLogStream}));
 app.use(helmet());
 
 app.use(function(err, req, res, next) {
-  res.setHeader('Content-Type', 'application/json');
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     console.log(now() + ' - ' + 'Invalid JSON');
     res.status(400);

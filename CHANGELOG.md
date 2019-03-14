@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Content-type not always properly set to `application/json` (#19)
+
 ## [v0.4.1] - 2019-03-09
 
 ### Fixed
