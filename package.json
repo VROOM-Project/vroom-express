@@ -22,8 +22,9 @@
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
     "helmet": "^2.1.0",
+    "minimist": "^1.2.0",
     "morgan": "^1.7.0",
-    "minimist": "^1.2.0"
+    "uuid": "^3.3.2"
   },
   "repository": {
     "type": "git",

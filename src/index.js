@@ -1,11 +1,12 @@
 'use strict';
 
+var bodyParser = require('body-parser');
 var express = require('express');
 var fs = require('fs');
-var morgan = require('morgan');
-var bodyParser = require('body-parser');
 var helmet = require('helmet');
 var minimist = require('minimist');
+var morgan = require('morgan');
+var uuid = require('node-uuid');
 
 // Config variables.
 var args = minimist(process.argv.slice(2), {
@@ -89,7 +90,7 @@ var logToFile = function(input) {
   var date = new Date();
   var timestamp = Math.floor(Date.now() / 1000);
 
-  var fileName = args['logdir'] + '/' + timestamp + '.json';
+  var fileName = args['logdir'] + '/' + timestamp + '_' + uuid.v1() + '.json';
   fs.writeFileSync(fileName,
                    input,
                    function (err, data) {
@@ -99,6 +100,14 @@ var logToFile = function(input) {
                    });
 
   return fileName;
+}
+
+var fileExists = function(filePath) {
+  try {
+    return fs.statSync(filePath).isFile();
+  } catch (err) {
+    return false;
+  }
 }
 
 // Callback for size and some input validity checks.
@@ -210,7 +219,9 @@ var execCallback = function (req, res) {
     }
     res.send(solution);
 
-    fs.unlinkSync(fileName);
+    if (fileExists(fileName)) {
+      fs.unlinkSync(fileName);
+    }
   });
 }
 
