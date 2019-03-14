@@ -101,6 +101,14 @@ var logToFile = function(input) {
   return fileName;
 }
 
+var fileExists = function(filePath) {
+  try {
+    return fs.statSync(filePath).isFile();
+  } catch (err) {
+    return false;
+  }
+}
+
 // Callback for size and some input validity checks.
 var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
   return function (req, res, next) {
@@ -210,7 +218,9 @@ var execCallback = function (req, res) {
     }
     res.send(solution);
 
-    fs.unlinkSync(fileName);
+    if (fileExists(fileName)) {
+      fs.unlinkSync(fileName);
+    }
   });
 }
 
