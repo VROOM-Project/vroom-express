@@ -199,7 +199,7 @@ var execCallback = function (req, res) {
     solution += data.toString();
   });
 
-  vroom.on('exit', function (code, signal) {
+  vroom.on('close', function (code, signal) {
     switch (code) {
     case 0:
       res.status(200);

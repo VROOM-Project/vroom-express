@@ -6,6 +6,7 @@
 
 - Content-type not always properly set to `application/json` (#19)
 - Server crash with concurrent requests (#20)
+- Empty response with 200 status (#22)
 
 ## [v0.4.1] - 2019-03-09
 
