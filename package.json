@@ -14,20 +14,24 @@
     "VRP",
     "routing",
     "OSRM",
-    "OSM"
+    "OSM",
+    "ORS",
+    "openrouteservice"
   ],
   "author": "Julien Coupey",
   "license": "BSD-2-Clause",
   "dependencies": {
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
-    "helmet": "^2.1.0",
+    "helmet": "^3.16.0",
     "minimist": "^1.2.0",
     "morgan": "^1.7.0",
+    "node-uuid": "^1.4.8",
     "uuid": "^3.3.2"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/VROOM-Project/vroom-express.git"
-  }
+  },
+  "devDependencies": {}
 }
