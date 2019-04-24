@@ -4,39 +4,9 @@ var bodyParser = require("body-parser");
 var express = require("express");
 var fs = require("fs");
 var helmet = require("helmet");
-var minimist = require("minimist");
 var morgan = require("morgan");
 var uuid = require("node-uuid");
 var config = require("./config");
-// Config variables.
-var args = minimist(process.argv.slice(2), {
-  alias: {
-    p: "port",
-    r: "router"
-  },
-  boolean: ["geometry", "override"],
-  default: {
-    port: 3000, // expressjs port
-    path: "", // VROOM path (if not in $PATH)
-    maxjobs: "2", // max number of jobs
-    maxvehicles: "2", // max number of vehicles
-    geometry: false, // retrieve geometry (-g)
-    router: "osrm", // routing backend (osrm, libosrm or ors)
-    override: true, // allow cl option override (-g only so far)
-    logdir: __dirname + "/..", // put logs in there
-    limit: "1mb", // max request size
-    timeout: 5 * 60 * 1000 // milli-seconds.
-  }
-});
-
-// For each routing profile add a host and a port for use with osrm
-// and ors.
-var routingServers = {
-  car: {
-    host: "0.0.0.0",
-    port: "5000"
-  }
-};
 
 // App and loaded modules.
 var app = express();
@@ -52,6 +22,7 @@ app.use(function(req, res, next) {
   next();
 });
 
+var args = config.cliArgs;
 app.use(bodyParser.json({ limit: args["limit"] }));
 app.use(bodyParser.urlencoded({ limit: args["limit"], extended: true }));
 
@@ -65,12 +36,13 @@ app.use(helmet());
 
 app.use(function(err, req, res, next) {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
-    var detail = new config.ErrorCodes().input;
-    console.log(now() + ": " + JSON.stringify(detail));
+    var message =
+      "Invalid JSON object in request, please add jobs and vehicles to the object body";
+    console.log(now() + ": " + JSON.stringify(message));
     res.status(400);
     res.send({
-      code: detail.code,
-      error: detail.message
+      code: config.errorCodes.input,
+      error: message
     });
   }
 });
@@ -107,36 +79,47 @@ var fileExists = function(filePath) {
 var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
   return function(req, res, next) {
     var correctInput = "jobs" in req.body && "vehicles" in req.body;
-    var detail = new config.ErrorCodes().input;
-    console.error(now() + ": " + JSON.stringify(detail));
+    var message =
+      "Invalid JSON object in request, please add jobs and vehicles to the object body";
+    console.error(now() + ": " + JSON.stringify(message));
     if (!correctInput) {
       res.status(400);
       res.send({
-        code: detail.code,
-        error: detail.message
+        code: config.errorCodes.input,
+        error: message
       });
       return;
     }
 
     if (req.body["jobs"].length > maxJobNumber) {
       var jobs = req.body["jobs"].length;
-      var detail = new config.ErrorCodes(jobs, maxJobNumber).jobs;
-      console.error(now() + ": " + JSON.stringify(detail));
+      var message = [
+        "Too many jobs (",
+        jobs,
+        ") in query, maximum is set to",
+        maxJobNumber
+      ].join(" ");
+      console.error(now() + ": " + JSON.stringify(message));
       res.status(413);
       res.send({
-        code: detail.code,
-        error: detail.message
+        code: config.errorCodes.jobs,
+        error: message
       });
       return;
     }
     if (req.body["vehicles"].length > maxVehicleNumber) {
       var vehicles = req.body["vehicles"].length;
-      var detail = new config.ErrorCodes(vehicles, maxVehicleNumber).vehicles;
-      console.error(now() + ": " + JSON.stringify(detail));
+      var message = [
+        "Too many vehicles (",
+        vehicles,
+        ") in query, maximum is set to",
+        maxVehicleNumber
+      ].join(" ");
+      console.error(now() + ": " + JSON.stringify(message));
       res.status(413);
       res.send({
-        code: detail.code,
-        error: detail.message
+        code: config.errorCodes.vehicles,
+        error: message
       });
       return;
     }
@@ -151,6 +134,7 @@ var vroomCommand = args["path"] + "vroom";
 var options = [];
 options.push("-r", args["router"]);
 if (args["router"] != "libosrm") {
+  var routingServers = config.routingServers;
   for (var profileName in routingServers) {
     var profile = routingServers[profileName];
     if ("host" in profile && "port" in profile) {
@@ -188,12 +172,12 @@ var execCallback = function(req, res) {
 
   // Handle errors.
   vroom.on("error", function(err) {
-    var detail = new config.ErrorCodes(err).internal;
-    console.error(now() + ": " + JSON.stringify(detail) + ", " + err);
+    var message = ["Unknown internal error", arg1].join(" ");
+    console.error(now() + ": " + JSON.stringify(message) + ", " + err);
     res.status(500);
     res.send({
-      code: detail.code,
-      error: detail.message + ", " + err
+      code: config.errorCodes.internal,
+      error: message + ", " + err
     });
   });
 
