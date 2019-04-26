@@ -78,10 +78,9 @@ var fileExists = function(filePath) {
 var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
   return function(req, res, next) {
     var correctInput = "jobs" in req.body && "vehicles" in req.body;
-    var message =
-      "Invalid JSON object in request, please add jobs and vehicles to the object body";
-    console.error(now() + ": " + JSON.stringify(message));
     if (!correctInput) {
+      var message = "Invalid JSON object in request, please add jobs and vehicles to the object body";
+      console.error(now() + ": " + JSON.stringify(message));
       res.status(400);
       res.send({
         code: config.errorCodes.input,
@@ -101,7 +100,7 @@ var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
       console.error(now() + ": " + JSON.stringify(message));
       res.status(413);
       res.send({
-        code: config.errorCodes.jobs,
+        code: config.errorCodes.tooLarge,
         error: message
       });
       return;
@@ -117,7 +116,7 @@ var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
       console.error(now() + ": " + JSON.stringify(message));
       res.status(413);
       res.send({
-        code: config.errorCodes.vehicles,
+        code: config.errorCodes.tooLarge,
         error: message
       });
       return;
@@ -168,12 +167,12 @@ var execCallback = function (req, res) {
 
   // Handle errors.
   vroom.on("error", function(err) {
-    var message = ["Unknown internal error", arg1].join(" ");
-    console.error(now() + ": " + JSON.stringify(message) + ", " + err);
+    var message = ["Unknown internal error", err].join(": ");
+    console.error(now() + ": " + JSON.stringify(message));
     res.status(500);
     res.send({
       code: config.errorCodes.internal,
-      error: message + ", " + err
+      error: message
     });
   });
 

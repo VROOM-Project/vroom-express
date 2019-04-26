@@ -12,8 +12,8 @@ var cliArgs = minimist(process.argv.slice(2), {
   default: {
     port: 3000, // expressjs port
     path: "", // VROOM path (if not in $PATH)
-    maxjobs: "2", // max number of jobs
-    maxvehicles: "2", // max number of vehicles
+    maxjobs: "1000", // max number of jobs
+    maxvehicles: "200", // max number of vehicles
     geometry: false, // retrieve geometry (-g)
     router: "osrm", // routing backend (osrm, libosrm or ors)
     override: true, // allow cl option override (-g only so far)
@@ -38,8 +38,7 @@ var errorCodes = {
   internal: 1,
   input: 2,
   routing: 3,
-  vehicles: 4,
-  jobs: 5
+  tooLarge: 4
 };
 
 module.exports = {
