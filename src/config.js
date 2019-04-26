@@ -1,3 +1,5 @@
+"use strict";
+
 var minimist = require("minimist");
 
 // Config variables.
