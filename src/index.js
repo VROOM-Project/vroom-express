@@ -4,51 +4,9 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var fs = require('fs');
 var helmet = require('helmet');
-var minimist = require('minimist');
 var morgan = require('morgan');
 var uuid = require('node-uuid');
-
-// Config variables.
-var args = minimist(process.argv.slice(2), {
-  alias: {
-    p: 'port',
-    r: 'router',
-  },
-  boolean: [
-    'geometry',
-    'override'
-  ],
-  default: {
-    port: 3000,                 // expressjs port
-    path: '',                   // VROOM path (if not in $PATH)
-    maxjobs: '1000',            // max number of jobs
-    maxvehicles: '200',         // max number of vehicles
-    geometry: false,            // retrieve geometry (-g)
-    router: "osrm",             // routing backend (osrm, libosrm or ors)
-    override: true,             // allow cl option override (-g only so far)
-    logdir: __dirname + '/..',  // put logs in there
-    limit: '1mb',               // max request size
-    timeout: 5 * 60 * 1000      // milli-seconds.
-  }
-});
-
-// For each routing profile add a host and a port for use with osrm
-// and ors.
-var routingServers = {
-  'car': {
-    'host': '0.0.0.0',
-    'port': '5000'
-  }
-}
-
-// Hard-code error codes 1, 2 and 3 as defined in vroom. Add 4 code
-// for size checks.
-var errorCode = {
-  'internal': 1,
-  'input': 2,
-  'routing': 3,
-  'tooLarge': 4
-}
+var config = require("./config");
 
 // App and loaded modules.
 var app = express();
@@ -62,6 +20,7 @@ app.use(function(req, res, next) {
   next();
 });
 
+var args = config.cliArgs;
 app.use(bodyParser.json({limit: args['limit']}));
 app.use(bodyParser.urlencoded({limit: args['limit'], extended: true}));
 
@@ -73,10 +32,15 @@ app.use(morgan('combined', {stream: accessLogStream}));
 app.use(helmet());
 
 app.use(function(err, req, res, next) {
-  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    console.log(now() + ' - ' + 'Invalid JSON');
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    var message =
+      "Invalid JSON object in request, please add jobs and vehicles to the object body";
+    console.log(now() + ": " + JSON.stringify(message));
     res.status(400);
-    res.send({code: errorCode.input, error: 'Invalid json.'});
+    res.send({
+      code: config.errorCodes.input,
+      error: message
+    });
   }
 });
 
@@ -84,7 +48,7 @@ app.use(function(err, req, res, next) {
 var now = function() {
   var date = new Date();
   return date.toUTCString();
-}
+};
 
 var logToFile = function(input) {
   var date = new Date();
@@ -100,7 +64,7 @@ var logToFile = function(input) {
                    });
 
   return fileName;
-}
+};
 
 var fileExists = function(filePath) {
   try {
@@ -108,39 +72,58 @@ var fileExists = function(filePath) {
   } catch (err) {
     return false;
   }
-}
+};
 
 // Callback for size and some input validity checks.
 var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
-  return function (req, res, next) {
-    var correctInput = ('jobs' in req.body)
-        && ('vehicles' in req.body);
-
+  return function(req, res, next) {
+    var correctInput = "jobs" in req.body && "vehicles" in req.body;
     if (!correctInput) {
+      var message = "Invalid JSON object in request, please add jobs and vehicles to the object body";
+      console.error(now() + ": " + JSON.stringify(message));
       res.status(400);
-      res.send({code: errorCode.input, error: 'Invalid query.'});
+      res.send({
+        code: config.errorCodes.input,
+        error: message
+      });
       return;
     }
 
-    if (req.body['jobs'].length > maxJobNumber) {
-      console.log(now()
-                  + ' - Too many jobs in query ('
-                  + req.body['jobs'].length + ')');
+    if (req.body["jobs"].length > maxJobNumber) {
+      var jobs = req.body["jobs"].length;
+      var message = [
+        "Too many jobs (",
+        jobs,
+        ") in query, maximum is set to",
+        maxJobNumber
+      ].join(" ");
+      console.error(now() + ": " + JSON.stringify(message));
       res.status(413);
-      res.send({code: errorCode.tooLarge, error: 'Too many jobs.'});
+      res.send({
+        code: config.errorCodes.tooLarge,
+        error: message
+      });
       return;
     }
-    if (req.body['vehicles'].length > maxVehicleNumber) {
-      console.log(now()
-                  + ' - Too many vehicles in query ('
-                  + req.body['vehicles'].length + ')');
+    if (req.body["vehicles"].length > maxVehicleNumber) {
+      var vehicles = req.body["vehicles"].length;
+      var message = [
+        "Too many vehicles (",
+        vehicles,
+        ") in query, maximum is set to",
+        maxVehicleNumber
+      ].join(" ");
+      console.error(now() + ": " + JSON.stringify(message));
       res.status(413);
-      res.send({code: errorCode.tooLarge, error: 'Too many vehicles.'});
+      res.send({
+        code: config.errorCodes.tooLarge,
+        error: message
+      });
       return;
     }
     next();
-  }
-}
+  };
+};
 
 // Cli wrapper and associated callback.
 var spawn = require('child_process').spawn;
@@ -149,15 +132,18 @@ var vroomCommand = args['path'] + 'vroom';
 var options = [];
 options.push('-r', args['router']);
 if (args['router'] != 'libosrm') {
+  var routingServers = config.routingServers;
   for (var profileName in routingServers) {
     var profile = routingServers[profileName];
     if ('host' in profile && 'port' in profile) {
       options.push('-a', profileName + ":" + profile['host']);
       options.push('-p', profileName + ":" + profile['port']);
     } else {
-      console.log("Incomplete configuration: profile '" +
-        profileName + "' requires 'host' and 'port'.");
-      return;
+      console.error(
+        "Incomplete configuration: profile '" +
+          profileName +
+          "' requires 'host' and 'port'."
+      );
     }
   }
 }
@@ -180,14 +166,18 @@ var execCallback = function (req, res) {
   var vroom = spawn(vroomCommand, reqOptions, {shell: true});
 
   // Handle errors.
-  vroom.on('error', function(err) {
-    console.log(now() + ' - ' + err);
+  vroom.on("error", function(err) {
+    var message = ["Unknown internal error", err].join(": ");
+    console.error(now() + ": " + JSON.stringify(message));
     res.status(500);
-    res.send({code: errorCode.internal, error: 'Unfound command.'});
+    res.send({
+      code: config.errorCodes.internal,
+      error: message
+    });
   });
 
-  vroom.stderr.on('data', function (data) {
-    console.log(now() + ' - ' + data.toString());
+  vroom.stderr.on("data", function(data) {
+    console.error(now() + ": " + data.toString());
   });
 
   // Handle solution. The temporary solution variable is required as
@@ -223,7 +213,7 @@ var execCallback = function (req, res) {
       fs.unlinkSync(fileName);
     }
   });
-}
+};
 
 app.post('/', [sizeCheckCallback(args['maxjobs'], args['maxvehicles']), execCallback]);
 

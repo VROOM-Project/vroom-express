@@ -14,7 +14,9 @@
     "VRP",
     "routing",
     "OSRM",
-    "OSM"
+    "OSM",
+    "ORS",
+    "openrouteservice"
   ],
   "author": "Julien Coupey",
   "license": "BSD-2-Clause",
