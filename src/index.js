@@ -1,72 +1,78 @@
-'use strict';
-
-var bodyParser = require('body-parser');
-var express = require('express');
-var fs = require('fs');
-var helmet = require('helmet');
-var morgan = require('morgan');
-var uuid = require('node-uuid');
-var config = require("./config");
+const bodyParser = require('body-parser');
+const express = require('express');
+const fs = require('fs');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const uuid = require('uuid');
+const config = require('./config');
 
 // App and loaded modules.
-var app = express();
+const app = express();
+
+const HTTP_OK_CODE = 200;
+const HTTP_ERROR_CODE = 400;
+const HTTP_TOOLARGE_CODE = 413;
+const HTTP_INTERNALERROR_CODE = 500;
 
 // Enable cross-origin ressource sharing.
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers",
-             "Origin, X-Requested-With, Content-Type, Accept");
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept',
+  );
   res.setHeader('Content-Type', 'application/json');
   next();
 });
 
-var args = config.cliArgs;
-app.use(bodyParser.json({limit: args['limit']}));
-app.use(bodyParser.urlencoded({limit: args['limit'], extended: true}));
+const args = config.cliArgs;
+app.use(bodyParser.json({limit: args.limit}));
+app.use(bodyParser.urlencoded({extended: true, limit: args.limit}));
 
-var accessLogStream = fs.createWriteStream(args['logdir'] + '/access.log',
-                                           {flags: 'a'});
+const accessLogStream = fs.createWriteStream(args.logdir + '/access.log', {
+  flags: 'a',
+});
 
 app.use(morgan('combined', {stream: accessLogStream}));
 
 app.use(helmet());
 
-app.use(function(err, req, res, next) {
-  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
-    var message =
-      "Invalid JSON object in request, please add jobs and vehicles to the object body";
-    console.log(now() + ": " + JSON.stringify(message));
-    res.status(400);
+app.use((err, req, res, next) => {
+  if (
+    err instanceof SyntaxError &&
+    err.status === HTTP_OK_CODE &&
+    'body' in err
+  ) {
+    const message =
+      'Invalid JSON object in request, please add jobs and vehicles to the object body';
+    console.log(now() + ': ' + JSON.stringify(message));
+    res.status(HTTP_OK_CODE);
     res.send({
-      code: config.errorCodes.input,
-      error: message
+      code: config.vroomErrorCodes.input,
+      error: message,
     });
   }
 });
 
 // Simple date generator for console output.
-var now = function() {
-  var date = new Date();
+const now = function() {
+  const date = new Date();
   return date.toUTCString();
 };
 
-var logToFile = function(input) {
-  var date = new Date();
-  var timestamp = Math.floor(Date.now() / 1000);
-
-  var fileName = args['logdir'] + '/' + timestamp + '_' + uuid.v1() + '.json';
-  fs.writeFileSync(fileName,
-                   input,
-                   function (err, data) {
-                     if (err) {
-                       console.log(now() + err);
-                     }
-                   });
+const logToFile = function(input) {
+  const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
+  const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
+  fs.writeFileSync(fileName, input, (err, data) => {
+    if (err) {
+      console.log(now() + err);
+    }
+  });
 
   return fileName;
 };
 
-var fileExists = function(filePath) {
+const fileExists = function(filePath) {
   try {
     return fs.statSync(filePath).isFile();
   } catch (err) {
@@ -75,49 +81,50 @@ var fileExists = function(filePath) {
 };
 
 // Callback for size and some input validity checks.
-var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
+const sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
   return function(req, res, next) {
-    var correctInput = "jobs" in req.body && "vehicles" in req.body;
+    const correctInput = 'jobs' in req.body && 'vehicles' in req.body;
     if (!correctInput) {
-      var message = "Invalid JSON object in request, please add jobs and vehicles to the object body";
-      console.error(now() + ": " + JSON.stringify(message));
-      res.status(400);
+      const message =
+        'Invalid JSON object in request, please add jobs and vehicles to the object body';
+      console.error(now() + ': ' + JSON.stringify(message));
+      res.status(HTTP_ERROR_CODE);
       res.send({
-        code: config.errorCodes.input,
-        error: message
+        code: config.vroomErrorCodes.input,
+        error: message,
       });
       return;
     }
 
-    if (req.body["jobs"].length > maxJobNumber) {
-      var jobs = req.body["jobs"].length;
-      var message = [
-        "Too many jobs (",
+    if (req.body.jobs.length > maxJobNumber) {
+      const jobs = req.body.jobs.length;
+      const message = [
+        'Too many jobs (',
         jobs,
-        ") in query, maximum is set to",
-        maxJobNumber
-      ].join(" ");
-      console.error(now() + ": " + JSON.stringify(message));
-      res.status(413);
+        ') in query, maximum is set to',
+        maxJobNumber,
+      ].join(' ');
+      console.error(now() + ': ' + JSON.stringify(message));
+      res.status(HTTP_TOOLARGE_CODE);
       res.send({
-        code: config.errorCodes.tooLarge,
-        error: message
+        code: config.vroomErrorCodes.tooLarge,
+        error: message,
       });
       return;
     }
-    if (req.body["vehicles"].length > maxVehicleNumber) {
-      var vehicles = req.body["vehicles"].length;
-      var message = [
-        "Too many vehicles (",
+    if (req.body.vehicles.length > maxVehicleNumber) {
+      const vehicles = req.body.vehicles.length;
+      const message = [
+        'Too many vehicles (',
         vehicles,
-        ") in query, maximum is set to",
-        maxVehicleNumber
-      ].join(" ");
-      console.error(now() + ": " + JSON.stringify(message));
-      res.status(413);
+        ') in query, maximum is set to',
+        maxVehicleNumber,
+      ].join(' ');
+      console.error(now() + ': ' + JSON.stringify(message));
+      res.status(HTTP_TOOLARGE_CODE);
       res.send({
-        code: config.errorCodes.tooLarge,
-        error: message
+        code: config.vroomErrorCodes.tooLarge,
+        error: message,
       });
       return;
     }
@@ -126,86 +133,93 @@ var sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
 };
 
 // Cli wrapper and associated callback.
-var spawn = require('child_process').spawn;
+const spawn = require('child_process').spawn;
 
-var vroomCommand = args['path'] + 'vroom';
-var options = [];
-options.push('-r', args['router']);
-if (args['router'] != 'libosrm') {
-  var routingServers = config.routingServers;
-  for (var profileName in routingServers) {
-    var profile = routingServers[profileName];
+const vroomCommand = args.path + 'vroom';
+const options = [];
+options.push('-r', args.router);
+if (args.router != 'libosrm') {
+  const routingServers = config.routingServers;
+  for (const profileName in routingServers) {
+    const profile = routingServers[profileName];
     if ('host' in profile && 'port' in profile) {
-      options.push('-a', profileName + ":" + profile['host']);
-      options.push('-p', profileName + ":" + profile['port']);
+      options.push('-a', profileName + ':' + profile.host);
+      options.push('-p', profileName + ':' + profile.port);
     } else {
       console.error(
         "Incomplete configuration: profile '" +
           profileName +
-          "' requires 'host' and 'port'."
+          "' requires 'host' and 'port'.",
       );
     }
   }
 }
-if (args['geometry']) {
+if (args.geometry) {
   options.push('-g');
 }
 
-var execCallback = function (req, res) {
-  var reqOptions = options.slice();
-  if (!args['geometry'] && args['override']
-     && 'options' in req.body && 'g' in req.body['options']
-     && req.body['options']['g']) {
+const execCallback = function(req, res) {
+  const reqOptions = options.slice();
+  if (
+    !args.geometry &&
+    args.override &&
+    'options' in req.body &&
+    'g' in req.body.options &&
+    req.body.options.g
+  ) {
     reqOptions.push('-g');
   }
 
-
-  var fileName = logToFile(JSON.stringify(req.body));
+  const fileName = logToFile(JSON.stringify(req.body));
   reqOptions.push('-i ' + fileName);
 
-  var vroom = spawn(vroomCommand, reqOptions, {shell: true});
+  const vroom = spawn(vroomCommand, reqOptions, {shell: true});
 
   // Handle errors.
-  vroom.on("error", function(err) {
-    var message = ["Unknown internal error", err].join(": ");
-    console.error(now() + ": " + JSON.stringify(message));
-    res.status(500);
+  vroom.on('error', err => {
+    const message = ['Unknown internal error', err].join(': ');
+    console.error(now() + ': ' + JSON.stringify(message));
+    res.status(HTTP_INTERNALERROR_CODE);
     res.send({
-      code: config.errorCodes.internal,
-      error: message
+      code: config.vroomErrorCodes.internal,
+      error: message,
     });
   });
 
-  vroom.stderr.on("data", function(data) {
-    console.error(now() + ": " + data.toString());
+  vroom.stderr.on('data', data => {
+    console.error(now() + ': ' + data.toString());
   });
 
   // Handle solution. The temporary solution variable is required as
   // we also want to adjust the status that is only retrieved with
   // 'exit', after data is written in stdout.
-  var solution = '';
+  let solution = '';
 
-  vroom.stdout.on('data', function (data) {
+  vroom.stdout.on('data', data => {
     solution += data.toString();
   });
 
-  vroom.on('close', function (code, signal) {
+  vroom.on('close', (code, signal) => {
     switch (code) {
-    case 0:
-      res.status(200);
-      break;
-    case 1:
-      // Internal error.
-      res.status(500);
-      break;
-    case 2:
-      // Input error.
-      res.status(400);
-      break;
-    case 3:
-      // Routing error.
-      res.status(500);
-      break;
+      case config.vroomErrorCodes.ok:
+        res.status(HTTP_OK_CODE);
+        break;
+      case config.vroomErrorCodes.internal:
+        // Internal error.
+        res.status(HTTP_INTERNALERROR_CODE);
+        break;
+      case config.vroomErrorCodes.input:
+        // Input error.
+        res.status(HTTP_ERROR_CODE);
+        break;
+      case config.vroomErrorCodes.routing:
+        // Routing error.
+        res.status(HTTP_INTERNALERROR_CODE);
+        break;
+      case 127: //eslint-disable-line
+        // vroom not found on command line
+        res.status(HTTP_INTERNALERROR_CODE);
+        break;
     }
     res.send(solution);
 
@@ -215,10 +229,13 @@ var execCallback = function (req, res) {
   });
 };
 
-app.post('/', [sizeCheckCallback(args['maxjobs'], args['maxvehicles']), execCallback]);
+app.post('/', [
+  sizeCheckCallback(args.maxjobs, args.maxvehicles),
+  execCallback,
+]);
 
-var server = app.listen(args['port'], function () {
-  console.log('vroom-express listening on port ' + args['port'] + '!');
+const server = app.listen(args.port, () => {
+  console.log('vroom-express listening on port ' + args.port + '!');
 });
 
-server.setTimeout(args['timeout']);
+server.setTimeout(args.timeout);

@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "description": "An express server to expose VROOM as a web API.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+    "test": "npm run test:other && npm run test:js",
+    "start": "node src/index.js",
+    "fix:other": "npm run prettier --write",
+    "fix:js": "npm run test:js --fix",
+    "fix": "npm run fix:js && npm run fix:other",
+    "prettier": "prettier \"**/*.{json,md,scss,yaml,yml}\"",
+    "test:other": "npm run prettier --list-different",
+    "test:js": "eslint --ignore-path .gitignore --ignore-path .prettierignore \"**/*.{js,jsx}\""
   },
   "keywords": [
     "VROOM",
@@ -31,5 +37,28 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/VROOM-Project/vroom-express.git"
+  },
+  "devDependencies": {
+    "eslint": "5.16.0",
+    "eslint-config-prettier": "4.2.0",
+    "eslint-plugin-prettier": "3.0.1",
+    "husky": "2.2.0",
+    "lint-staged": "8.1.6",
+    "prettier": "1.17.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{json,md,scss,yaml,yml}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
