@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
   res.setHeader('Content-Type', 'application/json');
   next();
@@ -30,7 +30,7 @@ app.use(bodyParser.json({limit: args.limit}));
 app.use(bodyParser.urlencoded({extended: true, limit: args.limit}));
 
 const accessLogStream = fs.createWriteStream(args.logdir + '/access.log', {
-  flags: 'a',
+  flags: 'a'
 });
 
 app.use(morgan('combined', {stream: accessLogStream}));
@@ -40,16 +40,16 @@ app.use(helmet());
 app.use((err, req, res, next) => {
   if (
     err instanceof SyntaxError &&
-    err.status === HTTP_OK_CODE &&
+    err.status === HTTP_ERROR_CODE &&
     'body' in err
   ) {
     const message =
       'Invalid JSON object in request, please add jobs and vehicles to the object body';
     console.log(now() + ': ' + JSON.stringify(message));
-    res.status(HTTP_OK_CODE);
+    res.status(HTTP_ERROR_CODE);
     res.send({
       code: config.vroomErrorCodes.input,
-      error: message,
+      error: message
     });
   }
 });
@@ -91,7 +91,7 @@ const sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
       res.status(HTTP_ERROR_CODE);
       res.send({
         code: config.vroomErrorCodes.input,
-        error: message,
+        error: message
       });
       return;
     }
@@ -102,13 +102,13 @@ const sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
         'Too many jobs (',
         jobs,
         ') in query, maximum is set to',
-        maxJobNumber,
+        maxJobNumber
       ].join(' ');
       console.error(now() + ': ' + JSON.stringify(message));
       res.status(HTTP_TOOLARGE_CODE);
       res.send({
         code: config.vroomErrorCodes.tooLarge,
-        error: message,
+        error: message
       });
       return;
     }
@@ -118,13 +118,13 @@ const sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
         'Too many vehicles (',
         vehicles,
         ') in query, maximum is set to',
-        maxVehicleNumber,
+        maxVehicleNumber
       ].join(' ');
       console.error(now() + ': ' + JSON.stringify(message));
       res.status(HTTP_TOOLARGE_CODE);
       res.send({
         code: config.vroomErrorCodes.tooLarge,
-        error: message,
+        error: message
       });
       return;
     }
@@ -149,7 +149,7 @@ if (args.router != 'libosrm') {
       console.error(
         "Incomplete configuration: profile '" +
           profileName +
-          "' requires 'host' and 'port'.",
+          "' requires 'host' and 'port'."
       );
     }
   }
@@ -182,7 +182,7 @@ const execCallback = function(req, res) {
     res.status(HTTP_INTERNALERROR_CODE);
     res.send({
       code: config.vroomErrorCodes.internal,
-      error: message,
+      error: message
     });
   });
 
@@ -231,7 +231,7 @@ const execCallback = function(req, res) {
 
 app.post('/', [
   sizeCheckCallback(args.maxjobs, args.maxvehicles),
-  execCallback,
+  execCallback
 ]);
 
 const server = app.listen(args.port, () => {

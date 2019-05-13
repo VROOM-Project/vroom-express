@@ -25,8 +25,8 @@ const cliArgs = minimist(process.argv.slice(2), {
     path: '', // VROOM path (if not in $PATH)
     port: PORT, // expressjs port
     router: ROUTER, // routing backend (osrm, libosrm or ors)
-    timeout: TIMEOUT, // milli-seconds.
-  },
+    timeout: TIMEOUT // milli-seconds.
+  }
 });
 
 // For each routing profile add a host and a port for use with osrm
@@ -34,8 +34,8 @@ const cliArgs = minimist(process.argv.slice(2), {
 const routingServers = {
   car: {
     host: '0.0.0.0',
-    port: '5000',
-  },
+    port: '5000'
+  }
 };
 
 const VROOM_OK_CODE = 0;
@@ -51,11 +51,11 @@ const vroomErrorCodes = {
   internal: VROOM_INTERNALERROR_CODE,
   ok: VROOM_OK_CODE,
   routing: VROOM_ROUTINGERROR_CODE,
-  tooLarge: VROOM_TOOLARGE_CODE,
+  tooLarge: VROOM_TOOLARGE_CODE
 };
 
 module.exports = {
   cliArgs: cliArgs,
   routingServers: routingServers,
-  vroomErrorCodes: vroomErrorCodes,
+  vroomErrorCodes: vroomErrorCodes
 };

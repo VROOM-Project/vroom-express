@@ -1,2 +1,4 @@
 /node_modules
 access.log
+yarn.lock
+package-lock.json
