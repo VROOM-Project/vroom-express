@@ -44,7 +44,7 @@ app.use((err, req, res, next) => {
     'body' in err
   ) {
     const message =
-      'Invalid JSON object in request, please add jobs and vehicles to the object body';
+      'Invalid JSON object in request, please add vehicles and jobs or shipments to the object body';
     console.log(now() + ': ' + JSON.stringify(message));
     res.status(HTTP_ERROR_CODE);
     res.send({
@@ -83,10 +83,13 @@ const fileExists = function(filePath) {
 // Callback for size and some input validity checks.
 const sizeCheckCallback = function(maxLocationNumber, maxVehicleNumber) {
   return function(req, res, next) {
-    const correctInput = 'jobs' in req.body && 'vehicles' in req.body;
+    const hasJobs = 'jobs' in req.body;
+    const hasShipments = 'shipments' in req.body;
+
+    const correctInput = (hasJobs || hasShipments) && 'vehicles' in req.body;
     if (!correctInput) {
       const message =
-        'Invalid JSON object in request, please add jobs and vehicles to the object body';
+        'Invalid JSON object in request, please add vehicles and jobs or shipments to the object body';
       console.error(now() + ': ' + JSON.stringify(message));
       res.status(HTTP_ERROR_CODE);
       res.send({
@@ -96,11 +99,18 @@ const sizeCheckCallback = function(maxLocationNumber, maxVehicleNumber) {
       return;
     }
 
-    if (req.body.jobs.length > maxLocationNumber) {
-      const jobs = req.body.jobs.length;
+    let nbLocations = 0;
+    if (hasJobs) {
+      nbLocations += req.body.jobs.length;
+    }
+    if (hasShipments) {
+      nbLocations += 2 * req.body.shipments.length;
+    }
+
+    if (nbLocations > maxLocationNumber) {
       const message = [
-        'Too many jobs (',
-        jobs,
+        'Too many locations (',
+        nbLocations,
         ') in query, maximum is set to',
         maxLocationNumber
       ].join(' ');
