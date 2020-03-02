@@ -1,7 +1,7 @@
 const minimist = require('minimist');
 
 const TIMEOUT = 5 * 60 * 1000; // eslint-disable-line
-const MAX_JOBS = 1000;
+const MAX_LOCATIONS = 1000;
 const MAX_VEHICLES = 200;
 const MAX_REQUEST_SIZE = '1mb';
 const PORT = 3000;
@@ -19,7 +19,7 @@ const cliArgs = minimist(process.argv.slice(2), {
     geometry: false, // retrieve geometry (-g)
     limit: MAX_REQUEST_SIZE, // max request size
     logdir: LOG_DIR, // put logs in there
-    maxjobs: MAX_JOBS, // max number of jobs
+    maxlocations: MAX_LOCATIONS, // max number of jobs/shipments locations
     maxvehicles: MAX_VEHICLES, // max number of vehicles
     override: true, // allow cl option override (-g only so far)
     path: '', // VROOM path (if not in $PATH)

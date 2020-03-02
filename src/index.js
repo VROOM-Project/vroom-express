@@ -81,7 +81,7 @@ const fileExists = function(filePath) {
 };
 
 // Callback for size and some input validity checks.
-const sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
+const sizeCheckCallback = function(maxLocationNumber, maxVehicleNumber) {
   return function(req, res, next) {
     const correctInput = 'jobs' in req.body && 'vehicles' in req.body;
     if (!correctInput) {
@@ -96,13 +96,13 @@ const sizeCheckCallback = function(maxJobNumber, maxVehicleNumber) {
       return;
     }
 
-    if (req.body.jobs.length > maxJobNumber) {
+    if (req.body.jobs.length > maxLocationNumber) {
       const jobs = req.body.jobs.length;
       const message = [
         'Too many jobs (',
         jobs,
         ') in query, maximum is set to',
-        maxJobNumber
+        maxLocationNumber
       ].join(' ');
       console.error(now() + ': ' + JSON.stringify(message));
       res.status(HTTP_TOOLARGE_CODE);
@@ -230,7 +230,7 @@ const execCallback = function(req, res) {
 };
 
 app.post('/', [
-  sizeCheckCallback(args.maxjobs, args.maxvehicles),
+  sizeCheckCallback(args.maxlocations, args.maxvehicles),
   execCallback
 ]);
 
