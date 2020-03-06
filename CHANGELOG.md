@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- configuration is now done via `config.yml` in the root of the repo (#38)
+
 ## [v0.4.2] - 2019-03-14
 
 ### Fixed

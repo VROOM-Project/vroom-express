@@ -19,6 +19,12 @@ git checkout v0.4.2             # For vroom v1.4
 git checkout v0.3.0             # For vroom v1.3
 ```
 
+- Copy the `config.yml.template` to `config.yml` and change to your preferences:
+
+```bash
+cp config.yml.template config.yml
+```
+
 - Install dependencies using `npm`
 
 ```bash

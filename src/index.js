@@ -29,9 +29,12 @@ const args = config.cliArgs;
 app.use(bodyParser.json({limit: args.limit}));
 app.use(bodyParser.urlencoded({extended: true, limit: args.limit}));
 
-const accessLogStream = fs.createWriteStream(args.logdir + '/access.log', {
-  flags: 'a'
-});
+const accessLogStream = fs.createWriteStream(
+  config.cliArgs.logdir + '/access.log',
+  {
+    flags: 'a'
+  }
+);
 
 app.use(morgan('combined', {stream: accessLogStream}));
 
@@ -62,7 +65,8 @@ const now = function() {
 
 const logToFile = function(input) {
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
-  const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
+  const fileName =
+    config.cliArgs.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
   fs.writeFileSync(fileName, input, (err, data) => {
     if (err) {
       console.log(now() + err);
@@ -148,10 +152,10 @@ const spawn = require('child_process').spawn;
 const vroomCommand = args.path + 'vroom';
 const options = [];
 options.push('-r', args.router);
-if (args.router != 'libosrm') {
+if (args.router !== 'libosrm') {
   const routingServers = config.routingServers;
-  for (const profileName in routingServers) {
-    const profile = routingServers[profileName];
+  for (const profileName in routingServers[args.router]) {
+    const profile = routingServers[args.router][profileName];
     if ('host' in profile && 'port' in profile) {
       options.push('-a', profileName + ':' + profile.host);
       options.push('-p', profileName + ':' + profile.port);
