@@ -13,6 +13,9 @@ try {
   process.exit();
 }
 
+// Prefer env variable for router
+const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
+
 // Config variables.
 const cliArgs = minimist(process.argv.slice(2), {
   alias: {
@@ -29,7 +32,7 @@ const cliArgs = minimist(process.argv.slice(2), {
     override: config_yml.cliArgs.override, // allow cl option override (-g only so far)
     path: config_yml.cliArgs.path, // VROOM path (if not in $PATH)
     port: config_yml.cliArgs.port, // expressjs port
-    router: config_yml.cliArgs.router, // routing backend (osrm, libosrm or ors)
+    router: router, // routing backend (osrm, libosrm or ors)
     timeout: config_yml.cliArgs.timeout // milli-seconds.
   }
 });

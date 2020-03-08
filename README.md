@@ -19,12 +19,6 @@ git checkout v0.4.2             # For vroom v1.4
 git checkout v0.3.0             # For vroom v1.3
 ```
 
-- Copy the `config.yml.template` to `config.yml` and change to your preferences:
-
-```bash
-cp config.yml.template config.yml
-```
-
 - Install dependencies using `npm`
 
 ```bash
@@ -38,6 +32,10 @@ Run the server using:
 ```bash
 npm start
 ```
+
+Configuration of the server can be edited in the `./config.yml`.
+
+Optionally prepend the command with `VROOM_ROUTER=<router>`, `router` being `osrm` (default) or `ors`. Using the environment variable **will override the config.yml `router` setting**.
 
 Provided everything is fine with your VROOM and routing setup, you
 should now be able to run queries like:
