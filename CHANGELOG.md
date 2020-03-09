@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [V0.5.0] - 2020-03-09
+
 ### Added
 
 - Compatibility with `vroom` v1.5 (#37)
