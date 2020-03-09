@@ -60,18 +60,6 @@ const now = function() {
   return date.toUTCString();
 };
 
-const logToFile = function(input) {
-  const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
-  const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
-  fs.writeFileSync(fileName, input, (err, data) => {
-    if (err) {
-      console.log(now() + err);
-    }
-  });
-
-  return fileName;
-};
-
 const fileExists = function(filePath) {
   try {
     return fs.statSync(filePath).isFile();
@@ -180,7 +168,21 @@ const execCallback = function(req, res) {
     reqOptions.push('-g');
   }
 
-  const fileName = logToFile(JSON.stringify(req.body));
+  const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
+  const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
+  try {
+    fs.writeFileSync(fileName, JSON.stringify(req.body));
+  } catch (err) {
+    console.error(now() + ': ' + err);
+
+    res.status(HTTP_INTERNALERROR_CODE);
+    res.send({
+      code: config.vroomErrorCodes.internal,
+      error: 'Internal error'
+    });
+    return;
+  }
+
   reqOptions.push('-i ' + fileName);
 
   const vroom = spawn(vroomCommand, reqOptions, {shell: true});
