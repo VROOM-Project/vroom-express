@@ -2,9 +2,11 @@
 
 ## [Unreleased]
 
-### Changed
+### Added
 
-- configuration is now done via `config.yml` in the root of the repo (#38)
+- Compatibility with `vroom` v1.5 (#37)
+- Configuration file (#25, #38)
+- Code formatting setup (#26)
 
 ### Fixed
 
