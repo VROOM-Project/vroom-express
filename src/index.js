@@ -29,12 +29,9 @@ const args = config.cliArgs;
 app.use(bodyParser.json({limit: args.limit}));
 app.use(bodyParser.urlencoded({extended: true, limit: args.limit}));
 
-const accessLogStream = fs.createWriteStream(
-  config.cliArgs.logdir + '/access.log',
-  {
-    flags: 'a'
-  }
-);
+const accessLogStream = fs.createWriteStream(args.logdir + '/access.log', {
+  flags: 'a'
+});
 
 app.use(morgan('combined', {stream: accessLogStream}));
 
@@ -65,8 +62,7 @@ const now = function() {
 
 const logToFile = function(input) {
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
-  const fileName =
-    config.cliArgs.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
+  const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
   fs.writeFileSync(fileName, input, (err, data) => {
     if (err) {
       console.log(now() + err);
