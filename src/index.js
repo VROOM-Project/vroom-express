@@ -148,10 +148,10 @@ const spawn = require('child_process').spawn;
 const vroomCommand = args.path + 'vroom';
 const options = [];
 options.push('-r', args.router);
-if (args.router != 'libosrm') {
+if (args.router !== 'libosrm') {
   const routingServers = config.routingServers;
-  for (const profileName in routingServers) {
-    const profile = routingServers[profileName];
+  for (const profileName in routingServers[args.router]) {
+    const profile = routingServers[args.router][profileName];
     if ('host' in profile && 'port' in profile) {
       options.push('-a', profileName + ':' + profile.host);
       options.push('-p', profileName + ':' + profile.port);

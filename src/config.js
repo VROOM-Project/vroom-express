@@ -1,12 +1,20 @@
 const minimist = require('minimist');
+const yaml = require('js-yaml');
+const fs = require('fs');
 
-const TIMEOUT = 5 * 60 * 1000; // eslint-disable-line
-const MAX_LOCATIONS = 1000;
-const MAX_VEHICLES = 200;
-const MAX_REQUEST_SIZE = '1mb';
-const PORT = 3000;
-const LOG_DIR = __dirname + '/..';
-const ROUTER = 'osrm';
+let config_yml;
+try {
+  config_yml = yaml.safeLoad(fs.readFileSync('./config.yml'));
+} catch (err) {
+  console.log(
+    'Please provide a valid config.yml in the root.\nSee https://github.com/VROOM-Project/vroom-express#setup\n'
+  );
+  process.exitCode = 1;
+  process.exit();
+}
+
+// Prefer env variable for router
+const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
 
 // Config variables.
 const cliArgs = minimist(process.argv.slice(2), {
@@ -16,28 +24,20 @@ const cliArgs = minimist(process.argv.slice(2), {
   },
   boolean: ['geometry', 'override'],
   default: {
-    geometry: false, // retrieve geometry (-g)
-    limit: MAX_REQUEST_SIZE, // max request size
-    logdir: LOG_DIR, // put logs in there
-    maxlocations: MAX_LOCATIONS, // max number of jobs/shipments locations
-    maxvehicles: MAX_VEHICLES, // max number of vehicles
-    override: true, // allow cl option override (-g only so far)
-    path: '', // VROOM path (if not in $PATH)
-    port: PORT, // expressjs port
-    router: ROUTER, // routing backend (osrm, libosrm or ors)
-    timeout: TIMEOUT // milli-seconds.
+    geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
+    limit: config_yml.cliArgs.limit, // max request size
+    logdir: __dirname + config_yml.cliArgs.logdir, // put logs in there
+    maxlocations: config_yml.cliArgs.maxlocations, // max number of jobs/shipments locations
+    maxvehicles: config_yml.cliArgs.maxvehicles, // max number of vehicles
+    override: config_yml.cliArgs.override, // allow cl option override (-g only so far)
+    path: config_yml.cliArgs.path, // VROOM path (if not in $PATH)
+    port: config_yml.cliArgs.port, // expressjs port
+    router: router, // routing backend (osrm, libosrm or ors)
+    timeout: config_yml.cliArgs.timeout // milli-seconds.
   }
 });
 
-// For each routing profile add a host and a port for use with osrm
-// and ors.
-const routingServers = {
-  car: {
-    host: '0.0.0.0',
-    port: '5000'
-  }
-};
-
+// Error codes
 const VROOM_OK_CODE = 0;
 const VROOM_INTERNALERROR_CODE = 1;
 const VROOM_INPUTERROR_CODE = 2;
@@ -56,6 +56,6 @@ const vroomErrorCodes = {
 
 module.exports = {
   cliArgs: cliArgs,
-  routingServers: routingServers,
+  routingServers: config_yml.routingServers,
   vroomErrorCodes: vroomErrorCodes
 };

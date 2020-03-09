@@ -33,6 +33,10 @@ Run the server using:
 npm start
 ```
 
+Configuration of the server can be edited in the `./config.yml`.
+
+Optionally prepend the command with `VROOM_ROUTER=<router>`, `router` being `osrm` (default), `libosrm` or `ors`. Using the environment variable **will override the config.yml `router` setting**.
+
 Provided everything is fine with your VROOM and routing setup, you
 should now be able to run queries like:
 
