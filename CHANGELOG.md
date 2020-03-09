@@ -6,6 +6,11 @@
 
 - configuration is now done via `config.yml` in the root of the repo (#38)
 
+### Fixed
+
+- Improve error handling for file writing (#31)
+- Wrong http status code in case of crash or missing executable (#27)
+
 ## [v0.4.2] - 2019-03-14
 
 ### Fixed
