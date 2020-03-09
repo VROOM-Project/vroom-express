@@ -226,10 +226,13 @@ const execCallback = function(req, res) {
         // Routing error.
         res.status(HTTP_INTERNALERROR_CODE);
         break;
-      case 127: //eslint-disable-line
-        // vroom not found on command line
+      default:
+        // Required for e.g. vroom crash or missing command in $PATH.
         res.status(HTTP_INTERNALERROR_CODE);
-        break;
+        solution = {
+          code: config.vroomErrorCodes.internal,
+          error: 'Internal error'
+        };
     }
     res.send(solution);
 
