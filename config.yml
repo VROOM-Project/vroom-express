@@ -1,7 +1,7 @@
 cliArgs:
   geometry: false # retrieve geometry (-g)
-  threads: 4 # retrieve number of threads to use (-t)
-  explore: 5 # retrieve exploration level to use (0..5) (-x)
+  threads: false # retrieve number of threads to use (-t)
+  explore: false # retrieve exploration level to use (0..5) (-x)
   limit: '1mb' # max request size
   logdir: '/..' # the path for the logs relative to ./src
   maxlocations: 1000 # max number of jobs/shipments locations
