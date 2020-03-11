@@ -22,7 +22,7 @@ const cliArgs = minimist(process.argv.slice(2), {
     p: 'port', // eslint-disable-line
     r: 'router', // eslint-disable-line
   },
-  boolean: ['geometry', 'override'],
+  boolean: ['geometry', 'threads', 'explore', 'override'],
   default: {
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     threads: config_yml.cliArgs.threads, // retrieve number of threads to use (-t)
