@@ -178,6 +178,16 @@ const execCallback = function(req, res) {
     reqOptions.push('-t ' + req.body.options.t);
   }
 
+  if (
+      !args.explore &&
+      args.override &&
+      'options' in req.body &&
+      'x' in req.body.options &&
+      req.body.options.x
+  ) {
+    reqOptions.push('-x ' + req.body.options.x);
+  }
+
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
   const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
   try {

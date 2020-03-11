@@ -25,6 +25,8 @@ const cliArgs = minimist(process.argv.slice(2), {
   boolean: ['geometry', 'override'],
   default: {
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
+    threads: config_yml.cliArgs.threads, // retrieve number of threads to use (-t)
+    explore: config_yml.cliArgs.explore, // retrieve exploration level to use (0..5) (-x)
     limit: config_yml.cliArgs.limit, // max request size
     logdir: __dirname + config_yml.cliArgs.logdir, // put logs in there
     maxlocations: config_yml.cliArgs.maxlocations, // max number of jobs/shipments locations
