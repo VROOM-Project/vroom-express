@@ -168,6 +168,16 @@ const execCallback = function(req, res) {
     reqOptions.push('-g');
   }
 
+  if (
+      !args.threads &&
+      args.override &&
+      'options' in req.body &&
+      't' in req.body.options &&
+      req.body.options.t
+  ) {
+    reqOptions.push('-t ' + req.body.options.t);
+  }
+
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
   const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
   try {
@@ -184,6 +194,8 @@ const execCallback = function(req, res) {
   }
 
   reqOptions.push('-i ' + fileName);
+
+  console.log("Vroom options : " + reqOptions);
 
   const vroom = spawn(vroomCommand, reqOptions, {shell: true});
 
