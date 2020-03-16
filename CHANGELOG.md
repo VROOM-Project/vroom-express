@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Add env var for access.log (#41)
+
 ## [V0.5.0] - 2020-03-09
 
 ### Added
