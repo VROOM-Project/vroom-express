@@ -15,7 +15,7 @@ try {
 
 // Prefer env variable for router & access.log
 const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
-const logdir = process.env.VROOM_LOG || config_yml.cliArgs.logdir;
+const logdir = process.env.VROOM_LOG || __dirname + config_yml.cliArgs.logdir;
 
 // Config variables.
 const cliArgs = minimist(process.argv.slice(2), {
@@ -27,7 +27,7 @@ const cliArgs = minimist(process.argv.slice(2), {
   default: {
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     limit: config_yml.cliArgs.limit, // max request size
-    logdir: __dirname + logdir, // put logs in there
+    logdir: logdir, // put logs in there
     maxlocations: config_yml.cliArgs.maxlocations, // max number of jobs/shipments locations
     maxvehicles: config_yml.cliArgs.maxvehicles, // max number of vehicles
     override: config_yml.cliArgs.override, // allow cl option override (-g only so far)
