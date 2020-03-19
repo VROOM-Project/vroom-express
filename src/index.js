@@ -249,6 +249,36 @@ app.post('/', [
   execCallback
 ]);
 
+// set the health endpoint with some small problem
+app.get('/health', (req, res) => {
+  const vroom = spawn(vroomCommand, [
+    '-i',
+    './healthchecks/vroom_custom_matrix.json'
+  ]);
+
+  let msg = 'healthy';
+  let status = HTTP_OK_CODE;
+
+  vroom.on('error', () => {
+    // only called when vroom not in cliArgs.path or PATH
+    msg = 'vroom is not in $PATH, check cliArgs.path in config.yml';
+    status = HTTP_INTERNALERROR_CODE;
+  });
+
+  vroom.stderr.on('data', err => {
+    // called when vroom throws an error and sends the error message back
+    msg = err.toString();
+    status = HTTP_INTERNALERROR_CODE;
+  });
+
+  vroom.on('close', code => {
+    res.status(status).send({
+      code: code,
+      msg: msg
+    });
+  });
+});
+
 const server = app.listen(args.port, () => {
   console.log('vroom-express listening on port ' + args.port + '!');
 });
