@@ -272,10 +272,10 @@ app.get('/health', (req, res) => {
   });
 
   vroom.on('close', code => {
-    res.status(status).send({
-      code: code,
-      msg: msg
-    });
+    if (code !== config.vroomErrorCodes.ok) {
+      console.error(`${now()}: ${msg}`);
+    }
+    res.status(status).send();
   });
 });
 
