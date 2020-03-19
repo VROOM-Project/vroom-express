@@ -27,6 +27,13 @@ Run the server using:
 npm start
 ```
 
+Health check should now return a `200` HTTP status code:
+
+```bash
+curl -w "%{http_code}" http://localhost:3000/health
+200
+```
+
 Provided everything is fine with your VROOM and routing setup, you
 should now be able to run queries like:
 
