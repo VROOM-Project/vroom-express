@@ -169,24 +169,26 @@ const execCallback = function(req, res) {
   }
 
   if (
-      !args.threads &&
       args.override &&
       'options' in req.body &&
       't' in req.body.options &&
-      req.body.options.t
+      req.body.options.t &&
+      typeof req.body.options.t == "number"
   ) {
-    reqOptions.push('-t ' + req.body.options.t);
+    args.threads = req.body.options.t;
   }
+  reqOptions.push('-t ' + args.threads);
 
   if (
-      !args.explore &&
       args.override &&
       'options' in req.body &&
       'x' in req.body.options &&
-      req.body.options.x
+      req.body.options.x &&
+      typeof req.body.options.x == "number"
   ) {
-    reqOptions.push('-x ' + req.body.options.x);
+    args.explore = req.body.options.x;
   }
+  reqOptions.push('-x ' + args.explore);
 
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
   const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
