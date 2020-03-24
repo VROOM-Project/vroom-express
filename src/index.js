@@ -168,6 +168,7 @@ const execCallback = function(req, res) {
     reqOptions.push('-g');
   }
 
+  var nbThreads = args.threads;
   if (
       args.override &&
       'options' in req.body &&
@@ -175,10 +176,11 @@ const execCallback = function(req, res) {
       req.body.options.t &&
       typeof req.body.options.t == "number"
   ) {
-    args.threads = req.body.options.t;
+    nbThreads = req.body.options.t;
   }
-  reqOptions.push('-t ' + args.threads);
+  reqOptions.push('-t ' + nbThreads);
 
+  var levelExploration = args.explore;
   if (
       args.override &&
       'options' in req.body &&
@@ -186,9 +188,9 @@ const execCallback = function(req, res) {
       req.body.options.x &&
       typeof req.body.options.x == "number"
   ) {
-    args.explore = req.body.options.x;
+    levelExploration = req.body.options.x;
   }
-  reqOptions.push('-x ' + args.explore);
+  reqOptions.push('-x ' + levelExploration);
 
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
   const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
