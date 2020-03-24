@@ -168,6 +168,28 @@ const execCallback = function(req, res) {
     reqOptions.push('-g');
   }
 
+  let nbThreads = args.threads;
+  if (
+    args.override &&
+    'options' in req.body &&
+    't' in req.body.options &&
+    typeof req.body.options.t == 'number'
+  ) {
+    nbThreads = req.body.options.t;
+  }
+  reqOptions.push('-t ' + nbThreads);
+
+  let explorationLevel = args.explore;
+  if (
+    args.override &&
+    'options' in req.body &&
+    'x' in req.body.options &&
+    typeof req.body.options.x == 'number'
+  ) {
+    explorationLevel = req.body.options.x;
+  }
+  reqOptions.push('-x ' + explorationLevel);
+
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
   const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
   try {

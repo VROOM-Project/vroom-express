@@ -25,6 +25,7 @@ const cliArgs = minimist(process.argv.slice(2), {
   },
   boolean: ['geometry', 'override'],
   default: {
+    explore: config_yml.cliArgs.explore, // exploration level to use (0..5) (-x)
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     limit: config_yml.cliArgs.limit, // max request size
     logdir: logdir, // put logs in there
@@ -34,6 +35,7 @@ const cliArgs = minimist(process.argv.slice(2), {
     path: config_yml.cliArgs.path, // VROOM path (if not in $PATH)
     port: config_yml.cliArgs.port, // expressjs port
     router: router, // routing backend (osrm, libosrm or ors)
+    threads: config_yml.cliArgs.threads, // number of threads to use (-t)
     timeout: config_yml.cliArgs.timeout // milli-seconds.
   }
 });
