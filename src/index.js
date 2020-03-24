@@ -168,25 +168,23 @@ const execCallback = function(req, res) {
     reqOptions.push('-g');
   }
 
-  var nbThreads = args.threads;
+  let nbThreads = args.threads;
   if (
-      args.override &&
-      'options' in req.body &&
-      't' in req.body.options &&
-      req.body.options.t &&
-      typeof req.body.options.t == "number"
+    args.override &&
+    'options' in req.body &&
+    't' in req.body.options &&
+    typeof req.body.options.t == 'number'
   ) {
     nbThreads = req.body.options.t;
   }
   reqOptions.push('-t ' + nbThreads);
 
-  var levelExploration = args.explore;
+  let levelExploration = args.explore;
   if (
-      args.override &&
-      'options' in req.body &&
-      'x' in req.body.options &&
-      req.body.options.x &&
-      typeof req.body.options.x == "number"
+    args.override &&
+    'options' in req.body &&
+    'x' in req.body.options &&
+    typeof req.body.options.x == 'number'
   ) {
     levelExploration = req.body.options.x;
   }
@@ -209,7 +207,7 @@ const execCallback = function(req, res) {
 
   reqOptions.push('-i ' + fileName);
 
-  console.log("Vroom options : " + reqOptions);
+  console.log('Vroom options : ' + reqOptions);
 
   const vroom = spawn(vroomCommand, reqOptions, {shell: true});
 
