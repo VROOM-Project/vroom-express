@@ -47,6 +47,22 @@ for input syntax.
 
 # Customization
 
-Adjust `./config.yml` to your needs.
+## Server side
+
+Adjust `config.yml` to your needs.
 
 Optionally set `VROOM_ROUTER=<router>`, `router` being `osrm` (default), `libosrm` or `ors`. Using the environment variable **will override the config.yml `router` setting**.
+
+## Client side
+
+If `override` is set to `true` in `config.yml`, then the `vroom` command-line parameters `-g`, `-t` and `-x` can be set dynamically per request in order to add detailed route geometry and indicators, set the number of threads and exploration level.
+
+Set values in the json payload via the `options` key:
+
+```json
+"options": {
+  "g": true,
+  "t": 4,
+  "x": 5
+}
+```

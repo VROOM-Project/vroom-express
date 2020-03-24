@@ -5,6 +5,7 @@
 ### Added
 
 - Endpoint for health check with self-contained small instance (#30)
+- Allow setting number of threads and exploration level at query time (#42)
 
 ### Changed
 

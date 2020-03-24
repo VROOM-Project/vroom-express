@@ -6,7 +6,7 @@ cliArgs:
   logdir: '/..' # the path for the logs relative to ./src
   maxlocations: 1000 # max number of jobs/shipments locations
   maxvehicles: 200 # max number of vehicles
-  override: true # allow cli option override (-g only so far)
+  override: true # allow cli options override (-g, -t and -x)
   path: '' # VROOM path (if not in $PATH)
   port: 3000 # expressjs port
   router: 'osrm' # routing backend (osrm, libosrm or ors)
