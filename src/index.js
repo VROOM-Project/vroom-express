@@ -273,10 +273,11 @@ app.post('/', [
 
 // set the health endpoint with some small problem
 app.get('/health', (req, res) => {
-  const vroom = spawn(vroomCommand, [
-    '-i',
-    './healthchecks/vroom_custom_matrix.json'
-  ]);
+  const vroom = spawn(
+    vroomCommand,
+    ['-i', './healthchecks/vroom_custom_matrix.json'],
+    {shell: true}
+  );
 
   let msg = 'healthy';
   let status = HTTP_OK_CODE;
