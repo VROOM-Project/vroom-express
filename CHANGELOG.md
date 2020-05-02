@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [v0.6.0] - 2020-05-02
+
 ### Added
 
 - Endpoint for health check with self-contained small instance (#30)
@@ -11,7 +13,7 @@
 
 - Add env var for access.log (#41)
 
-## [V0.5.0] - 2020-03-09
+## [v0.5.0] - 2020-03-09
 
 ### Added
 
