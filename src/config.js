@@ -36,7 +36,8 @@ const cliArgs = minimist(process.argv.slice(2), {
     port: config_yml.cliArgs.port, // expressjs port
     router: router, // routing backend (osrm, libosrm or ors)
     threads: config_yml.cliArgs.threads, // number of threads to use (-t)
-    timeout: config_yml.cliArgs.timeout // milli-seconds.
+    timeout: config_yml.cliArgs.timeout, // milli-seconds.
+    baseurl: config_yml.cliArgs.baseurl // base root url for api.
   }
 });
 
