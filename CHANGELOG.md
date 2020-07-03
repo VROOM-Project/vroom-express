@@ -4,7 +4,7 @@
 
 ### Added
 
-- configurable baseurl to define the root url of the api rest
+- configurable baseurl to define the root url of the api rest(#56)
 
 ## [v0.6.0] - 2020-05-02
 
