@@ -33,6 +33,12 @@ const accessLogStream = fs.createWriteStream(args.logdir + '/access.log', {
   flags: 'a'
 });
 
+if (typeof args.baseurl != 'string') {
+  args.baseurl = '/';
+} else if (args.baseurl.substr(-1) != '/') {
+  args.baseurl += '/';
+}
+
 const baseurl = args.baseurl || '/';
 
 app.use(morgan('combined', {stream: accessLogStream}));
@@ -274,7 +280,7 @@ app.post(baseurl, [
 ]);
 
 // set the health endpoint with some small problem
-app.get(baseurl+'health', (req, res) => {
+app.get(baseurl + 'health', (req, res) => {
   const vroom = spawn(
     vroomCommand,
     ['-i', './healthchecks/vroom_custom_matrix.json'],
