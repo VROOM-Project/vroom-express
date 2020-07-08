@@ -11,6 +11,7 @@ cliArgs:
   port: 3000 # expressjs port
   router: 'osrm' # routing backend (osrm, libosrm or ors)
   timeout: 300000 # milli-seconds
+  baseurl: '/' #base url for api
 routingServers:
   osrm:
     car:

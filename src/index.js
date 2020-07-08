@@ -266,13 +266,13 @@ const execCallback = function(req, res) {
   });
 };
 
-app.post('/', [
+app.post(args.baseurl, [
   sizeCheckCallback(args.maxlocations, args.maxvehicles),
   execCallback
 ]);
 
 // set the health endpoint with some small problem
-app.get('/health', (req, res) => {
+app.get(args.baseurl + 'health', (req, res) => {
   const vroom = spawn(
     vroomCommand,
     ['-i', './healthchecks/vroom_custom_matrix.json'],

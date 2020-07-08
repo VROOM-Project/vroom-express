@@ -17,6 +17,11 @@ try {
 const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
 const logdir = process.env.VROOM_LOG || __dirname + config_yml.cliArgs.logdir;
 
+let baseurl = config_yml.cliArgs.baseurl;
+if (baseurl.substr(-1) != '/') {
+  baseurl += '/';
+}
+
 // Config variables.
 const cliArgs = minimist(process.argv.slice(2), {
   alias: {
@@ -25,6 +30,7 @@ const cliArgs = minimist(process.argv.slice(2), {
   },
   boolean: ['geometry', 'override'],
   default: {
+    baseurl: baseurl, // base root url for api.
     explore: config_yml.cliArgs.explore, // exploration level to use (0..5) (-x)
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     limit: config_yml.cliArgs.limit, // max request size
