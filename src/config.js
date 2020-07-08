@@ -17,6 +17,14 @@ try {
 const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
 const logdir = process.env.VROOM_LOG || __dirname + config_yml.cliArgs.logdir;
 
+if (typeof config_yml.cliArgs.baseurl != 'string') {
+  config_yml.cliArgs.baseurl = '/';
+} else if (config_yml.cliArgs.baseurl.substr(-1) != '/') {
+  config_yml.cliArgs.baseurl += '/';
+}
+
+const baseurl = config_yml.cliArgs.baseurl || '/';
+
 // Config variables.
 const cliArgs = minimist(process.argv.slice(2), {
   alias: {
@@ -25,6 +33,7 @@ const cliArgs = minimist(process.argv.slice(2), {
   },
   boolean: ['geometry', 'override'],
   default: {
+    baseurl: baseurl, // base root url for api.
     explore: config_yml.cliArgs.explore, // exploration level to use (0..5) (-x)
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     limit: config_yml.cliArgs.limit, // max request size
@@ -36,8 +45,7 @@ const cliArgs = minimist(process.argv.slice(2), {
     port: config_yml.cliArgs.port, // expressjs port
     router: router, // routing backend (osrm, libosrm or ors)
     threads: config_yml.cliArgs.threads, // number of threads to use (-t)
-    timeout: config_yml.cliArgs.timeout, // milli-seconds.
-    baseurl: config_yml.cliArgs.baseurl // base root url for api.
+    timeout: config_yml.cliArgs.timeout // milli-seconds.
   }
 });
 
