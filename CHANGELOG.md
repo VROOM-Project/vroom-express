@@ -1,10 +1,14 @@
 # Changelog
 
-## [Unreleased]
+## [v0.7.0] - 2020-07-08
 
 ### Added
 
-- configurable baseurl to define the root url of the api rest(#56)
+- Configurable API root url (#56)
+
+### Changed
+
+- Update dependencies (#52)
 
 ## [v0.6.0] - 2020-05-02
 
