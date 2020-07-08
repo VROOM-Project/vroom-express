@@ -17,13 +17,10 @@ try {
 const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
 const logdir = process.env.VROOM_LOG || __dirname + config_yml.cliArgs.logdir;
 
-if (typeof config_yml.cliArgs.baseurl != 'string') {
-  config_yml.cliArgs.baseurl = '/';
-} else if (config_yml.cliArgs.baseurl.substr(-1) != '/') {
-  config_yml.cliArgs.baseurl += '/';
+let baseurl = config_yml.cliArgs.baseurl;
+if (baseurl.substr(-1) != '/') {
+  baseurl += '/';
 }
-
-const baseurl = config_yml.cliArgs.baseurl || '/';
 
 // Config variables.
 const cliArgs = minimist(process.argv.slice(2), {
