@@ -271,6 +271,43 @@ app.post(args.baseurl, [
   execCallback
 ]);
 
+//  get vroom version
+app.get(args.baseurl, (req, res) => {
+  const vroom = spawn(vroomCommand, ['-h'], {shell: true});
+
+  let msg = 'healthy';
+  let status = HTTP_OK_CODE;
+
+  vroom.on('error', () => {
+    // only called when vroom not in cliArgs.path or PATH
+    msg = 'vroom is not in $PATH, check cliArgs.path in config.yml';
+    status = HTTP_INTERNALERROR_CODE;
+  });
+
+  vroom.stderr.on('data', err => {
+    // called when vroom throws an error and sends the error message back
+    msg = err.toString();
+    status = HTTP_INTERNALERROR_CODE;
+  });
+
+  let out = '';
+  vroom.stdout.on('data', data => {
+    out += data.toString();
+  });
+
+  vroom.on('close', code => {
+    if (code !== config.vroomErrorCodes.ok) {
+      console.error(`${now()}: ${msg}`);
+    }
+
+    out = out.split('\n')[1];
+
+    const ver = out.match(/^Version: (.*)$/)[1];
+
+    res.status(status).send(`{"version": "${ver}"}`);
+  });
+});
+
 // set the health endpoint with some small problem
 app.get(args.baseurl + 'health', (req, res) => {
   const vroom = spawn(
