@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Update dependencies (#63)
+
 ### Removed
 
 - Drop `body-parser` dependency (#62)
