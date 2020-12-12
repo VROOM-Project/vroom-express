@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({extended: true, limit: args.limit}));
 
 const accessLogStream = rfs.createStream(args.logdir + '/access.log', {
   compress: 'gzip',
-  size: '100K'
+  size: args.logsize
 });
 
 app.use(morgan('combined', {stream: accessLogStream}));

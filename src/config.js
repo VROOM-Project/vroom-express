@@ -35,6 +35,7 @@ const cliArgs = minimist(process.argv.slice(2), {
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     limit: config_yml.cliArgs.limit, // max request size
     logdir: logdir, // put logs in there
+    logsize: config_yml.cliArgs.logsize, // max log file size for rotation
     maxlocations: config_yml.cliArgs.maxlocations, // max number of jobs/shipments locations
     maxvehicles: config_yml.cliArgs.maxvehicles, // max number of vehicles
     override: config_yml.cliArgs.override, // allow cl option override (-g only so far)
