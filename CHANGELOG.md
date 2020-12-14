@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Rotate log files (#59)
+
 ## [v0.7.0] - 2020-07-08
 
 ### Added
