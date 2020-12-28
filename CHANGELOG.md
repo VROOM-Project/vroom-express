@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Rotate log files (#59)
+
+### Changed
+
+- Update dependencies (#63)
+
+### Removed
+
+- Drop `body-parser` dependency (#62)
+
 ## [v0.7.0] - 2020-07-08
 
 ### Added

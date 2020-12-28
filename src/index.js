@@ -1,10 +1,10 @@
-const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const uuid = require('uuid');
 const config = require('./config');
+const rfs = require('rotating-file-stream');
 
 // App and loaded modules.
 const app = express();
@@ -26,11 +26,12 @@ app.use((req, res, next) => {
 });
 
 const args = config.cliArgs;
-app.use(bodyParser.json({limit: args.limit}));
-app.use(bodyParser.urlencoded({extended: true, limit: args.limit}));
+app.use(express.json({limit: args.limit}));
+app.use(express.urlencoded({extended: true, limit: args.limit}));
 
-const accessLogStream = fs.createWriteStream(args.logdir + '/access.log', {
-  flags: 'a'
+const accessLogStream = rfs.createStream(args.logdir + '/access.log', {
+  compress: 'gzip',
+  size: args.logsize
 });
 
 app.use(morgan('combined', {stream: accessLogStream}));
