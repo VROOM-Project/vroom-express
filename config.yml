@@ -49,7 +49,7 @@ routingServers:
     foot-hiking:
       host: '0.0.0.0'
       port: '8080'
-  ors:
+  valhalla:
     auto:
       host: '0.0.0.0'
       port: '8002'
