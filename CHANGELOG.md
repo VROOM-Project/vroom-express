@@ -5,6 +5,7 @@
 ### Added
 
 - Rotate log files (#59)
+- Valhalla support
 
 ### Changed
 
