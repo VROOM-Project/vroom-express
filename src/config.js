@@ -31,6 +31,7 @@ const cliArgs = minimist(process.argv.slice(2), {
   boolean: ['geometry', 'override'],
   default: {
     baseurl: baseurl, // base root url for api.
+    etamode: config_yml.cliArgs.etamode, // retrieve ETA mode config (-c)
     explore: config_yml.cliArgs.explore, // exploration level to use (0..5) (-x)
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     limit: config_yml.cliArgs.limit, // max request size

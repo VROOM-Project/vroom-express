@@ -159,6 +159,8 @@ if (args.geometry) {
 
 const execCallback = function(req, res) {
   const reqOptions = options.slice();
+
+  // Geometry Retrieving
   if (
     !args.geometry &&
     args.override &&
@@ -169,6 +171,18 @@ const execCallback = function(req, res) {
     reqOptions.push('-g');
   }
 
+  // ETA Mode Retrieving
+  if (
+    !args.etamode &&
+    args.override &&
+    'options' in req.body &&
+    'c' in req.body.options &&
+    req.body.options.c
+  ) {
+    reqOptions.push('-c');
+  }
+
+  // Threads Retrieving
   let nbThreads = args.threads;
   if (
     args.override &&
@@ -180,6 +194,7 @@ const execCallback = function(req, res) {
   }
   reqOptions.push('-t ' + nbThreads);
 
+  // Exploration Level Retrieving
   let explorationLevel = args.explore;
   if (
     args.override &&
