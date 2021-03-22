@@ -173,7 +173,6 @@ const execCallback = function(req, res) {
 
   // ETA Mode Retrieving
   if (
-    !args.etamode &&
     args.override &&
     'options' in req.body &&
     'c' in req.body.options &&
