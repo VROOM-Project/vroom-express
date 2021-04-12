@@ -31,7 +31,6 @@ const cliArgs = minimist(process.argv.slice(2), {
   boolean: ['geometry', 'override'],
   default: {
     baseurl: baseurl, // base root url for api.
-    etamode: config_yml.cliArgs.etamode, // retrieve ETA mode config (-c)
     explore: config_yml.cliArgs.explore, // exploration level to use (0..5) (-x)
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     limit: config_yml.cliArgs.limit, // max request size
@@ -41,6 +40,7 @@ const cliArgs = minimist(process.argv.slice(2), {
     maxvehicles: config_yml.cliArgs.maxvehicles, // max number of vehicles
     override: config_yml.cliArgs.override, // allow cl option override (-g only so far)
     path: config_yml.cliArgs.path, // VROOM path (if not in $PATH)
+    planmode: config_yml.cliArgs.planmode, // retrieve plan mode config (-c)
     port: config_yml.cliArgs.port, // expressjs port
     router: router, // routing backend (osrm, libosrm or ors)
     threads: config_yml.cliArgs.threads, // number of threads to use (-t)

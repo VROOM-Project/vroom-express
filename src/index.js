@@ -171,7 +171,7 @@ const execCallback = function(req, res) {
     reqOptions.push('-g');
   }
 
-  // ETA Mode Retrieving
+  // Plan mode Retrieving
   if (
     args.override &&
     'options' in req.body &&

@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.9.0] - 2021-04-13
+
+### Added
+
+- Possibility to launch VROOM in plan mode using -c flag as parameter. (#70, #71)
+
 ## [v0.8.0] - 2021-03-04
 
 ### Added

@@ -1,6 +1,6 @@
 cliArgs:
   geometry: false # retrieve geometry (-g)
-  etamode: false # run vroom in ETA mode (-c) if set to true
+  planmode: false # run vroom in plan mode (-c) if set to true
   threads: 4 # number of threads to use (-t)
   explore: 5 # exploration level to use (0..5) (-x)
   limit: '1mb' # max request size
@@ -8,7 +8,7 @@ cliArgs:
   logsize: '100M' # max log file size for rotation
   maxlocations: 1000 # max number of jobs/shipments locations
   maxvehicles: 200 # max number of vehicles
-  override: true # allow cli options override (-g, -t and -x)
+  override: true # allow cli options override (-c, -g, -t and -x)
   path: '' # VROOM path (if not in $PATH)
   port: 3000 # expressjs port
   router: 'osrm' # routing backend (osrm, libosrm or ors)

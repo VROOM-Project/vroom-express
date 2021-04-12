@@ -55,7 +55,7 @@ Optionally set `VROOM_ROUTER=<router>`, `router` being `osrm` (default), `libosr
 
 ## Client side
 
-If `override` is set to `true` in `config.yml`, then the `vroom` command-line parameters `-g`, `-c`, `-t` and `-x` can be set dynamically per request in order to add detailed route geometry and indicators, run vroom in ETA mode, set the number of threads and exploration level.
+If `override` is set to `true` in `config.yml`, then the `vroom` command-line parameters `-g`, `-c`, `-t` and `-x` can be set dynamically per request in order to add detailed route geometry and indicators, run vroom in plan mode, set the number of threads and exploration level.
 
 Set values in the json payload via the `options` key:
 
