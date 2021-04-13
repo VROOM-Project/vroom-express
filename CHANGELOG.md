@@ -1,11 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Valhalla support
+
 ## [v0.8.0] - 2021-03-04
 
 ### Added
 
 - Rotate log files (#59)
-- Valhalla support
 
 ### Changed
 

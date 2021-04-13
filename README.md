@@ -51,7 +51,7 @@ for input syntax.
 
 Adjust `config.yml` to your needs.
 
-Optionally set `VROOM_ROUTER=<router>`, `router` being `osrm` (default), `libosrm` or `ors`. Using the environment variable **will override the config.yml `router` setting**.
+Optionally set `VROOM_ROUTER=<router>`, `router` being `osrm` (default), `libosrm`, `ors` or `valhalla`. Using the environment variable **will override the config.yml `router` setting**.
 
 ## Client side
 
