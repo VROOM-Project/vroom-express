@@ -62,6 +62,9 @@ routingServers:
     motorcycle:
       host: '0.0.0.0'
       port: '8002'
+    motor_scooter:
+      host: '0.0.0.0'
+      port: '8002'
     taxi:
       host: '0.0.0.0'
       port: '8002'
