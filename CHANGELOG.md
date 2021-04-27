@@ -1,10 +1,10 @@
 # Changelog
 
-## [v0.8.1] - 2021-04-13
+## [Unreleased]
 
 ### Added
 
-- Valhalla support
+- Valhalla support (#77)
 
 ## [v0.8.0] - 2021-03-04
 
