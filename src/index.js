@@ -157,6 +157,10 @@ if (args.geometry) {
   options.push('-g');
 }
 
+if (args.planmode) {
+  options.push('-c');
+}
+
 const execCallback = function(req, res) {
   const reqOptions = options.slice();
 
