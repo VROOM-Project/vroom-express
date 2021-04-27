@@ -164,49 +164,35 @@ if (args.planmode) {
 const execCallback = function(req, res) {
   const reqOptions = options.slice();
 
-  // Geometry Retrieving
-  if (
-    !args.geometry &&
-    args.override &&
-    'options' in req.body &&
-    'g' in req.body.options &&
-    req.body.options.g
-  ) {
-    reqOptions.push('-g');
-  }
-
-  // Plan mode Retrieving
-  if (
-    args.override &&
-    'options' in req.body &&
-    'c' in req.body.options &&
-    req.body.options.c
-  ) {
-    reqOptions.push('-c');
-  }
-
-  // Threads Retrieving
+  // Default command-line values.
   let nbThreads = args.threads;
-  if (
-    args.override &&
-    'options' in req.body &&
-    't' in req.body.options &&
-    typeof req.body.options.t == 'number'
-  ) {
-    nbThreads = req.body.options.t;
-  }
-  reqOptions.push('-t ' + nbThreads);
-
-  // Exploration Level Retrieving
   let explorationLevel = args.explore;
-  if (
-    args.override &&
-    'options' in req.body &&
-    'x' in req.body.options &&
-    typeof req.body.options.x == 'number'
-  ) {
-    explorationLevel = req.body.options.x;
+
+  if (args.override && 'options' in req.body) {
+    // Optionally override defaults.
+
+    // Retrieve route geometry.
+    if (!args.geometry && 'g' in req.body.options && req.body.options.g) {
+      reqOptions.push('-g');
+    }
+
+    // Set plan mode.
+    if (!args.planmode && 'c' in req.body.options && req.body.options.c) {
+      reqOptions.push('-c');
+    }
+
+    // Adjust number of threads.
+    if ('t' in req.body.options && typeof req.body.options.t == 'number') {
+      nbThreads = req.body.options.t;
+    }
+
+    // Adjust exploration level.
+    if ('x' in req.body.options && typeof req.body.options.x == 'number') {
+      explorationLevel = req.body.options.x;
+    }
   }
+
+  reqOptions.push('-t ' + nbThreads);
   reqOptions.push('-x ' + explorationLevel);
 
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
