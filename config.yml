@@ -50,3 +50,31 @@ routingServers:
     foot-hiking:
       host: '0.0.0.0'
       port: '8080'
+  valhalla:
+    auto:
+      host: '0.0.0.0'
+      port: '8002'
+    bicycle:
+      host: '0.0.0.0'
+      port: '8002'
+    pedestrian:
+      host: '0.0.0.0'
+      port: '8002'
+    motorcycle:
+      host: '0.0.0.0'
+      port: '8002'
+    motor_scooter:
+      host: '0.0.0.0'
+      port: '8002'
+    taxi:
+      host: '0.0.0.0'
+      port: '8002'
+    hov:
+      host: '0.0.0.0'
+      port: '8002'
+    truck:
+      host: '0.0.0.0'
+      port: '8002'
+    bus:
+      host: '0.0.0.0'
+      port: '8002'
