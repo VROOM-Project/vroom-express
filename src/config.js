@@ -40,7 +40,7 @@ const cliArgs = minimist(process.argv.slice(2), {
     maxvehicles: config_yml.cliArgs.maxvehicles, // max number of vehicles
     override: config_yml.cliArgs.override, // allow cl option override (-g only so far)
     path: config_yml.cliArgs.path, // VROOM path (if not in $PATH)
-    planmode: config_yml.cliArgs.planmode, // retrieve plan mode config (-c)
+    planmode: config_yml.cliArgs.planmode, // set plan mode (-c)
     port: config_yml.cliArgs.port, // expressjs port
     router: router, // routing backend (osrm, libosrm or ors)
     threads: config_yml.cliArgs.threads, // number of threads to use (-t)
