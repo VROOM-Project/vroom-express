@@ -45,6 +45,13 @@ See the
 [API documentation](https://github.com/VROOM-Project/vroom/blob/master/docs/API.md)
 for input syntax.
 
+## API Clients
+
+Members of the community have created some unofficial API clients:
+|Language|Link                                   |
+|--------|---------------------------------------|
+|C#      |https://github.com/calebfaith/vroom.net|
+
 # Customization
 
 ## Server side
