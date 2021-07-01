@@ -21,10 +21,10 @@ routingServers:
       port: '5000'
     bike:
       host: '0.0.0.0'
-      port: '5000'
+      port: '5001'
     foot:
       host: '0.0.0.0'
-      port: '5000'
+      port: '5002'
   ors:
     driving-car:
       host: '0.0.0.0'
