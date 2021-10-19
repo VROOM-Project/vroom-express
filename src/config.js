@@ -4,7 +4,7 @@ const fs = require('fs');
 
 let config_yml;
 try {
-  config_yml = yaml.safeLoad(fs.readFileSync('./config.yml'));
+  config_yml = yaml.load(fs.readFileSync('./config.yml'));
 } catch (err) {
   console.log(
     'Please provide a valid config.yml in the root.\nSee https://github.com/VROOM-Project/vroom-express#setup\n'
@@ -18,7 +18,7 @@ const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
 const logdir = process.env.VROOM_LOG || __dirname + config_yml.cliArgs.logdir;
 
 let baseurl = config_yml.cliArgs.baseurl;
-if (baseurl.substr(-1) != '/') {
+if (baseurl.substr(-1) !== '/') {
   baseurl += '/';
 }
 
