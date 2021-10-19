@@ -10,7 +10,7 @@
     "fix": "npm run-script fix:js && npm run-script fix:other",
     "prettier": "prettier \"**/*.{json,md,scss,yaml,yml}\"",
     "test:other": "npm run-script -- prettier --check -w",
-    "test:js": "eslint -v --ignore-path .gitignore --ignore-path .prettierignore \"**/*.{js,jsx}\"",
+    "test:js": "eslint --ignore-path .gitignore --ignore-path .prettierignore \"**/*.{js,jsx}\"",
     "prepare": "husky install"
   },
   "keywords": [

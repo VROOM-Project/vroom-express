@@ -44,8 +44,8 @@ const cliArgs = minimist(process.argv.slice(2), {
     port: config_yml.cliArgs.port, // expressjs port
     router: router, // routing backend (osrm, libosrm or ors)
     threads: config_yml.cliArgs.threads, // number of threads to use (-t)
-    timeout: config_yml.cliArgs.timeout // milli-seconds.
-  }
+    timeout: config_yml.cliArgs.timeout, // milli-seconds.
+  },
 });
 
 // Error codes
@@ -62,11 +62,11 @@ const vroomErrorCodes = {
   internal: VROOM_INTERNALERROR_CODE,
   ok: VROOM_OK_CODE,
   routing: VROOM_ROUTINGERROR_CODE,
-  tooLarge: VROOM_TOOLARGE_CODE
+  tooLarge: VROOM_TOOLARGE_CODE,
 };
 
 module.exports = {
   cliArgs: cliArgs,
   routingServers: config_yml.routingServers,
-  vroomErrorCodes: vroomErrorCodes
+  vroomErrorCodes: vroomErrorCodes,
 };
