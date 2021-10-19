@@ -31,7 +31,7 @@ app.use(express.urlencoded({extended: true, limit: args.limit}));
 
 const accessLogStream = rfs.createStream(args.logdir + '/access.log', {
   compress: 'gzip',
-  size: args.logsize,
+  size: args.logsize
 });
 
 app.use(morgan('combined', {stream: accessLogStream}));
@@ -50,18 +50,18 @@ app.use((err, req, res, next) => {
     res.status(HTTP_ERROR_CODE);
     res.send({
       code: config.vroomErrorCodes.input,
-      error: message,
+      error: message
     });
   }
 });
 
 // Simple date generator for console output.
-const now = function () {
+const now = function() {
   const date = new Date();
   return date.toUTCString();
 };
 
-const fileExists = function (filePath) {
+const fileExists = function(filePath) {
   try {
     return fs.statSync(filePath).isFile();
   } catch (err) {
@@ -70,8 +70,8 @@ const fileExists = function (filePath) {
 };
 
 // Callback for size and some input validity checks.
-const sizeCheckCallback = function (maxLocationNumber, maxVehicleNumber) {
-  return function (req, res, next) {
+const sizeCheckCallback = function(maxLocationNumber, maxVehicleNumber) {
+  return function(req, res, next) {
     const hasJobs = 'jobs' in req.body;
     const hasShipments = 'shipments' in req.body;
 
@@ -83,7 +83,7 @@ const sizeCheckCallback = function (maxLocationNumber, maxVehicleNumber) {
       res.status(HTTP_ERROR_CODE);
       res.send({
         code: config.vroomErrorCodes.input,
-        error: message,
+        error: message
       });
       return;
     }
@@ -101,13 +101,13 @@ const sizeCheckCallback = function (maxLocationNumber, maxVehicleNumber) {
         'Too many locations (',
         nbLocations,
         ') in query, maximum is set to',
-        maxLocationNumber,
+        maxLocationNumber
       ].join(' ');
       console.error(now() + ': ' + JSON.stringify(message));
       res.status(HTTP_TOOLARGE_CODE);
       res.send({
         code: config.vroomErrorCodes.tooLarge,
-        error: message,
+        error: message
       });
       return;
     }
@@ -117,13 +117,13 @@ const sizeCheckCallback = function (maxLocationNumber, maxVehicleNumber) {
         'Too many vehicles (',
         vehicles,
         ') in query, maximum is set to',
-        maxVehicleNumber,
+        maxVehicleNumber
       ].join(' ');
       console.error(now() + ': ' + JSON.stringify(message));
       res.status(HTTP_TOOLARGE_CODE);
       res.send({
         code: config.vroomErrorCodes.tooLarge,
-        error: message,
+        error: message
       });
       return;
     }
@@ -161,7 +161,7 @@ if (args.planmode) {
   options.push('-c');
 }
 
-const execCallback = function (req, res) {
+const execCallback = function(req, res) {
   const reqOptions = options.slice();
 
   // Default command-line values.
@@ -205,7 +205,7 @@ const execCallback = function (req, res) {
     res.status(HTTP_INTERNALERROR_CODE);
     res.send({
       code: config.vroomErrorCodes.internal,
-      error: 'Internal error',
+      error: 'Internal error'
     });
     return;
   }
@@ -221,7 +221,7 @@ const execCallback = function (req, res) {
     res.status(HTTP_INTERNALERROR_CODE);
     res.send({
       code: config.vroomErrorCodes.internal,
-      error: message,
+      error: message
     });
   });
 
@@ -260,7 +260,7 @@ const execCallback = function (req, res) {
         res.status(HTTP_INTERNALERROR_CODE);
         solution = {
           code: config.vroomErrorCodes.internal,
-          error: 'Internal error',
+          error: 'Internal error'
         };
     }
     res.send(solution);
@@ -273,7 +273,7 @@ const execCallback = function (req, res) {
 
 app.post(args.baseurl, [
   sizeCheckCallback(args.maxlocations, args.maxvehicles),
-  execCallback,
+  execCallback
 ]);
 
 // set the health endpoint with some small problem
