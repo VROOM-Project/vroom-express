@@ -6,7 +6,6 @@
 
 - Update dependencies (#87)
 
-
 ## [v0.9.0] - 2021-05-06
 
 ### Added

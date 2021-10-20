@@ -9,8 +9,9 @@
     "fix:js": "npm run-script -- test:js --fix",
     "fix": "npm run-script fix:js && npm run-script fix:other",
     "prettier": "prettier \"**/*.{json,md,scss,yaml,yml}\"",
-    "test:other": "npm run-script -- prettier --list-different",
-    "test:js": "eslint --ignore-path .gitignore --ignore-path .prettierignore \"**/*.{js,jsx}\""
+    "test:other": "npm run-script -- prettier --check -w",
+    "test:js": "eslint --ignore-path .gitignore --ignore-path .prettierignore \"**/*.{js,jsx}\"",
+    "prepare": "husky install"
   },
   "keywords": [
     "VROOM",
@@ -43,8 +44,8 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.2",
-    "lint-staged": "^11.2.3",
+    "husky": "^5.2.0",
+    "lint-staged": "^8.2.1",
     "prettier": "^2.4.1"
   },
   "lint-staged": {
