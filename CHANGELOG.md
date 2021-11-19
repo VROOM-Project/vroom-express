@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [v0.10.0] - 2021-11-19
+
 ### Changed
 
 - Update dependencies (#87)
