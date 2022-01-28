@@ -190,6 +190,10 @@ const execCallback = function (req, res) {
     if ('x' in req.body.options && typeof req.body.options.x == 'number') {
       explorationLevel = req.body.options.x;
     }
+
+    if ('l' in req.body.options && typeof req.body.options.l == 'number') {
+      reqOptions.push('-l ' + req.body.options.l);
+    }
   }
 
   reqOptions.push('-t ' + nbThreads);
