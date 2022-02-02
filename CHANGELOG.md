@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- Adds option -l to request (#91)
+### Added
+
+- Expose option -l to request (#91)
 
 ## [v0.10.0] - 2021-11-19
 
