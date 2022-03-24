@@ -1,9 +1,10 @@
+const { spawn } = require('child_process');
 const express = require('express');
 const fs = require('fs');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const uuid = require('uuid');
-const config = require('./config');
+const config = require('./config.js');
 const rfs = require('rotating-file-stream');
 
 // App and loaded modules.
@@ -56,12 +57,12 @@ app.use((err, req, res, next) => {
 });
 
 // Simple date generator for console output.
-const now = function () {
+function now() {
   const date = new Date();
   return date.toUTCString();
 };
 
-const fileExists = function (filePath) {
+function fileExists(filePath) {
   try {
     return fs.statSync(filePath).isFile();
   } catch (err) {
@@ -70,7 +71,7 @@ const fileExists = function (filePath) {
 };
 
 // Callback for size and some input validity checks.
-const sizeCheckCallback = function (maxLocationNumber, maxVehicleNumber) {
+function sizeCheckCallback(maxLocationNumber, maxVehicleNumber) {
   return function (req, res, next) {
     const hasJobs = 'jobs' in req.body;
     const hasShipments = 'shipments' in req.body;
@@ -131,9 +132,6 @@ const sizeCheckCallback = function (maxLocationNumber, maxVehicleNumber) {
   };
 };
 
-// Cli wrapper and associated callback.
-const spawn = require('child_process').spawn;
-
 const vroomCommand = args.path + 'vroom';
 const options = [];
 options.push('-r', args.router);
@@ -161,7 +159,7 @@ if (args.planmode) {
   options.push('-c');
 }
 
-const execCallback = function (req, res) {
+function execCallback(req, res) {
   const reqOptions = options.slice();
 
   // Default command-line values.
