@@ -6,6 +6,10 @@
 
 - Expose option -l to request (#91)
 
+### Changed
+
+- Use named functions (#92)
+
 ## [v0.10.0] - 2021-11-19
 
 ### Changed
