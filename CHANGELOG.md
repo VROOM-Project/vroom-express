@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [v0.11.0] - 2022-06-11
+
 ### Added
 
 - Expose option -l to request (#91)

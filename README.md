@@ -10,7 +10,7 @@
 ```bash
 git clone https://github.com/VROOM-Project/vroom-express.git
 cd vroom-express
-git checkout v0.10.0
+git checkout v0.11.0
 ```
 
 - Install dependencies using `npm`

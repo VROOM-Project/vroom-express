@@ -1,6 +1,6 @@
 {
   "name": "vroom-express",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "An express server to expose VROOM as a web API.",
   "scripts": {
     "test": "npm run-script test:other && npm run-script test:js",
