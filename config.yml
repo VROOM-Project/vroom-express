@@ -27,28 +27,28 @@ routingServers:
       port: '5002'
   ors:
     driving-car:
-      host: '0.0.0.0'
+      host: '0.0.0.0/ors/v2'
       port: '8080'
     driving-hgv:
-      host: '0.0.0.0'
+      host: '0.0.0.0/ors/v2'
       port: '8080'
     cycling-regular:
-      host: '0.0.0.0'
+      host: '0.0.0.0/ors/v2'
       port: '8080'
     cycling-mountain:
-      host: '0.0.0.0'
+      host: '0.0.0.0/ors/v2'
       port: '8080'
     cycling-road:
-      host: '0.0.0.0'
+      host: '0.0.0.0/ors/v2'
       port: '8080'
     cycling-electric:
-      host: '0.0.0.0'
+      host: '0.0.0.0/ors/v2'
       port: '8080'
     foot-walking:
-      host: '0.0.0.0'
+      host: '0.0.0.0/ors/v2'
       port: '8080'
     foot-hiking:
-      host: '0.0.0.0'
+      host: '0.0.0.0/ors/v2'
       port: '8080'
   valhalla:
     auto:
