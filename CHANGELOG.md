@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- ors hosts in config to contain default base path /ors/v2 ([#99](https://github.com/VROOM-Project/vroom-express/pull/99)) 
+
 ## [v0.11.0] - 2022-06-11
 
 ### Added
