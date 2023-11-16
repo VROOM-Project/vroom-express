@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- ORS hosts in config to contain default base path `/ors/v2` (#99)
+
 ## [v0.11.0] - 2022-06-11
 
 ### Added
