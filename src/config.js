@@ -32,6 +32,7 @@ const cliArgs = minimist(process.argv.slice(2), {
   default: {
     baseurl: baseurl, // base root url for api.
     explore: config_yml.cliArgs.explore, // exploration level to use (0..5) (-x)
+    solvelimit: config_yml.cliArgs.solvelimit, // stop solving process after 'limit' seconds (-l)
     geometry: config_yml.cliArgs.geometry, // retrieve geometry (-g)
     limit: config_yml.cliArgs.limit, // max request size
     logdir: logdir, // put logs in there
