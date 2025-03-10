@@ -8,12 +8,12 @@ cliArgs:
   logsize: '100M' # max log file size for rotation
   maxlocations: 1000 # max number of jobs/shipments locations
   maxvehicles: 200 # max number of vehicles
-  override: true # allow cli options override (-c, -g, -t and -x)
+  override: true # allow cli options override (-c, -g, -l, -t, and -x)
   path: '' # VROOM path (if not in $PATH)
   port: 3000 # expressjs port
-  router: 'osrm' # routing backend (osrm, libosrm or ors)
+  router: 'osrm' # routing backend (osrm, libosrm, ors, or valhalla)
   timeout: 300000 # milli-seconds
-  baseurl: '/' #base url for api
+  baseurl: '/' # base url for api
 routingServers:
   osrm:
     car:
