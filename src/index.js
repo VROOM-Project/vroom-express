@@ -1,4 +1,4 @@
-const { spawn } = require('child_process');
+const {spawn} = require('child_process');
 const express = require('express');
 const fs = require('fs');
 const helmet = require('helmet');
@@ -60,7 +60,7 @@ app.use((err, req, res, next) => {
 function now() {
   const date = new Date();
   return date.toUTCString();
-};
+}
 
 function fileExists(filePath) {
   try {
@@ -68,7 +68,7 @@ function fileExists(filePath) {
   } catch (err) {
     return false;
   }
-};
+}
 
 // Callback for size and some input validity checks.
 function sizeCheckCallback(maxLocationNumber, maxVehicleNumber) {
@@ -130,7 +130,7 @@ function sizeCheckCallback(maxLocationNumber, maxVehicleNumber) {
     }
     next();
   };
-};
+}
 
 const vroomCommand = args.path + 'vroom';
 const options = [];
@@ -271,7 +271,7 @@ function execCallback(req, res) {
       fs.unlinkSync(fileName);
     }
   });
-};
+}
 
 app.post(args.baseurl, [
   sizeCheckCallback(args.maxlocations, args.maxvehicles),
