@@ -4,11 +4,11 @@ cliArgs:
   threads: 4 # number of threads to use (-t)
   explore: 5 # exploration level to use (0..5) (-x)
   limit: '1mb' # max request size
-  logdir: '/..' # the path for the logs relative to ./src
+  logdir: '..' # the path for the logs relative to ./src
   logsize: '100M' # max log file size for rotation
   maxlocations: 1000 # max number of jobs/shipments locations
   maxvehicles: 200 # max number of vehicles
-  override: true # allow cli options override (-c, -g, -l, -t, and -x)
+  override: ['c', 'g', 'l', 't', 'x'] # allow cli options override (c, g, l, t, and x)
   path: '' # VROOM path (if not in $PATH)
   port: 3000 # expressjs port
   router: 'osrm' # routing backend (osrm, libosrm, ors, or valhalla)
