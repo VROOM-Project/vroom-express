@@ -165,6 +165,7 @@ function execCallback(req, res) {
   // Default command-line values.
   let nbThreads = args.threads;
   let explorationLevel = args.explore;
+  let solveLimit = args.solveLimit;
 
   if (args.override && 'options' in req.body) {
     // Optionally override defaults.
@@ -190,12 +191,13 @@ function execCallback(req, res) {
     }
 
     if ('l' in req.body.options && typeof req.body.options.l == 'number') {
-      reqOptions.push('-l ' + req.body.options.l);
+      solveLimit = req.body.options.l;
     }
   }
 
   reqOptions.push('-t ' + nbThreads);
   reqOptions.push('-x ' + explorationLevel);
+  reqOptions.push('-l ' + solveLimit);
 
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
   const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
