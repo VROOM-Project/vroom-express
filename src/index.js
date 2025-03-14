@@ -134,15 +134,15 @@ function sizeCheckCallback(maxLocationNumber, maxVehicleNumber) {
 }
 
 const vroomCommand = path.join(args.path, 'vroom');
-const options = [];
-options.push('-r', args.router);
+const defaultOptions = [];
+defaultOptions.push('-r', args.router);
 if (args.router !== 'libosrm') {
   const routingServers = config.routingServers;
   for (const profileName in routingServers[args.router]) {
     const profile = routingServers[args.router][profileName];
     if ('host' in profile && 'port' in profile) {
-      options.push('-a', profileName + ':' + profile.host);
-      options.push('-p', profileName + ':' + profile.port);
+      defaultOptions.push('-a', profileName + ':' + profile.host);
+      defaultOptions.push('-p', profileName + ':' + profile.port);
     } else {
       console.error(
         "Incomplete configuration: profile '" +
@@ -152,51 +152,68 @@ if (args.router !== 'libosrm') {
     }
   }
 }
-if (args.geometry) {
-  options.push('-g');
-}
 
-if (args.planmode) {
-  options.push('-c');
+if (args.override === true) {
+  args.override = ['c', 'g', 'l', 't', 'x'];
 }
+const allowedOverrides = new Set(
+  Array.isArray(args.override) ? args.override : []
+);
 
 function execCallback(req, res) {
-  const reqOptions = options.slice();
+  const options = defaultOptions.slice();
 
   // Default command-line values.
+  let planMode = args.planmode;
+  let geometry = args.geometry;
   let nbThreads = args.threads;
   let explorationLevel = args.explore;
 
-  if (args.override && 'options' in req.body) {
+  const reqOptions = req.body.options;
+  if (reqOptions) {
     // Optionally override defaults.
 
     // Retrieve route geometry.
-    if (!args.geometry && 'g' in req.body.options && req.body.options.g) {
-      reqOptions.push('-g');
+    if (
+      allowedOverrides.has('g') &&
+      'g' in reqOptions &&
+      reqOptions.g !== null
+    ) {
+      geometry = Boolean(reqOptions.g);
     }
 
     // Set plan mode.
-    if (!args.planmode && 'c' in req.body.options && req.body.options.c) {
-      reqOptions.push('-c');
+    if (
+      allowedOverrides.has('c') &&
+      'c' in reqOptions &&
+      reqOptions.c !== null
+    ) {
+      planMode = Boolean(reqOptions.c);
     }
 
     // Adjust number of threads.
-    if ('t' in req.body.options && typeof req.body.options.t == 'number') {
-      nbThreads = req.body.options.t;
+    if (allowedOverrides.has('t') && typeof reqOptions.t === 'number') {
+      nbThreads = reqOptions.t;
     }
 
     // Adjust exploration level.
-    if ('x' in req.body.options && typeof req.body.options.x == 'number') {
-      explorationLevel = req.body.options.x;
+    if (allowedOverrides.has('x') && typeof reqOptions.x === 'number') {
+      explorationLevel = reqOptions.x;
     }
 
-    if ('l' in req.body.options && typeof req.body.options.l == 'number') {
-      reqOptions.push('-l', req.body.options.l);
+    if (allowedOverrides.has('l') && typeof reqOptions.l === 'number') {
+      options.push('-l', reqOptions.l);
     }
   }
 
-  reqOptions.push('-t', nbThreads);
-  reqOptions.push('-x', explorationLevel);
+  if (planMode) {
+    options.push('-c');
+  }
+  if (geometry) {
+    options.push('-g');
+  }
+  options.push('-t', nbThreads);
+  options.push('-x', explorationLevel);
 
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
   const fileName = path.join(
@@ -216,9 +233,9 @@ function execCallback(req, res) {
     return;
   }
 
-  reqOptions.push('-i', '"' + fileName + '"');
+  options.push('-i', '"' + fileName + '"');
 
-  const vroom = spawn(vroomCommand, reqOptions, {shell: true});
+  const vroom = spawn(vroomCommand, options, {shell: true});
 
   // Handle errors.
   vroom.on('error', err => {
