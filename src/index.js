@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const uuid = require('uuid');
 const config = require('./config.js');
 const rfs = require('rotating-file-stream');
+const path = require('path');
 
 // App and loaded modules.
 const app = express();
@@ -30,7 +31,7 @@ const args = config.cliArgs;
 app.use(express.json({limit: args.limit}));
 app.use(express.urlencoded({extended: true, limit: args.limit}));
 
-const accessLogStream = rfs.createStream(args.logdir + '/access.log', {
+const accessLogStream = rfs.createStream(path.join(args.logdir, 'access.log'), {
   compress: 'gzip',
   size: args.logsize,
 });
@@ -132,7 +133,7 @@ function sizeCheckCallback(maxLocationNumber, maxVehicleNumber) {
   };
 }
 
-const vroomCommand = args.path + 'vroom';
+const vroomCommand = path.join(args.path, 'vroom');
 const options = [];
 options.push('-r', args.router);
 if (args.router !== 'libosrm') {
@@ -190,15 +191,18 @@ function execCallback(req, res) {
     }
 
     if ('l' in req.body.options && typeof req.body.options.l == 'number') {
-      reqOptions.push('-l ' + req.body.options.l);
+      reqOptions.push('-l', req.body.options.l);
     }
   }
 
-  reqOptions.push('-t ' + nbThreads);
-  reqOptions.push('-x ' + explorationLevel);
+  reqOptions.push('-t', nbThreads);
+  reqOptions.push('-x', explorationLevel);
 
   const timestamp = Math.floor(Date.now() / 1000); //eslint-disable-line
-  const fileName = args.logdir + '/' + timestamp + '_' + uuid.v1() + '.json';
+  const fileName = path.join(
+    args.logdir,
+    timestamp + '_' + uuid.v1() + '.json'
+  );
   try {
     fs.writeFileSync(fileName, JSON.stringify(req.body));
   } catch (err) {
@@ -212,7 +216,7 @@ function execCallback(req, res) {
     return;
   }
 
-  reqOptions.push('-i ' + fileName);
+  reqOptions.push('-i', '"' + fileName + '"');
 
   const vroom = spawn(vroomCommand, reqOptions, {shell: true});
 

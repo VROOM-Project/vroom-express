@@ -1,6 +1,7 @@
 const minimist = require('minimist');
 const yaml = require('js-yaml');
 const fs = require('fs');
+const path = require('path');
 
 let config_yml;
 try {
@@ -15,7 +16,8 @@ try {
 
 // Prefer env variable for router & access.log
 const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
-const logdir = process.env.VROOM_LOG || __dirname + config_yml.cliArgs.logdir;
+const logdir =
+  process.env.VROOM_LOG || path.join(__dirname, config_yml.cliArgs.logdir);
 
 let baseurl = config_yml.cliArgs.baseurl;
 if (baseurl.substr(-1) !== '/') {
