@@ -1,6 +1,7 @@
 const minimist = require('minimist');
 const yaml = require('js-yaml');
 const fs = require('fs');
+const path = require('path');
 
 let config_yml;
 try {
@@ -15,7 +16,8 @@ try {
 
 // Prefer env variable for router & access.log
 const router = process.env.VROOM_ROUTER || config_yml.cliArgs.router;
-const logdir = process.env.VROOM_LOG || __dirname + config_yml.cliArgs.logdir;
+const logdir =
+  process.env.VROOM_LOG || path.join(__dirname, config_yml.cliArgs.logdir);
 
 let baseurl = config_yml.cliArgs.baseurl;
 if (baseurl.substr(-1) !== '/') {
@@ -25,10 +27,11 @@ if (baseurl.substr(-1) !== '/') {
 // Config variables.
 const cliArgs = minimist(process.argv.slice(2), {
   alias: {
+    o: 'override', // eslint-disable-line
     p: 'port', // eslint-disable-line
     r: 'router', // eslint-disable-line
   },
-  boolean: ['geometry', 'override'],
+  boolean: ['geometry'],
   default: {
     baseurl: baseurl, // base root url for api.
     explore: config_yml.cliArgs.explore, // exploration level to use (0..5) (-x)
@@ -38,15 +41,19 @@ const cliArgs = minimist(process.argv.slice(2), {
     logsize: config_yml.cliArgs.logsize, // max log file size for rotation
     maxlocations: config_yml.cliArgs.maxlocations, // max number of jobs/shipments locations
     maxvehicles: config_yml.cliArgs.maxvehicles, // max number of vehicles
-    override: config_yml.cliArgs.override, // allow cl option override (-g only so far)
+    override: config_yml.cliArgs.override, // allow cl option override
     path: config_yml.cliArgs.path, // VROOM path (if not in $PATH)
     planmode: config_yml.cliArgs.planmode, // set plan mode (-c)
     port: config_yml.cliArgs.port, // expressjs port
-    router: router, // routing backend (osrm, libosrm or ors)
+    router: router, // routing backend
     threads: config_yml.cliArgs.threads, // number of threads to use (-t)
     timeout: config_yml.cliArgs.timeout, // milli-seconds.
   },
 });
+// Convert override option to array if it was provided just once
+if (typeof cliArgs.override === 'string') {
+  cliArgs.override = [cliArgs.override];
+}
 
 // Error codes
 const VROOM_OK_CODE = 0;
