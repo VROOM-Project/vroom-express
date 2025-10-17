@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## [Unreleased]
+
+### Changed
+
+- Allow overriding options individually on a per-request basis (#111)
+- Ability to dynamically set `g` and `c` option to false (#111)
 
 ## [v0.12.0] - 2023-11-16
 
